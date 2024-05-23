@@ -78,16 +78,19 @@ serverConfig parseConfig(const std::string& filename)
 		{
 			if (inLocation)
 			{
+				//ajoute 'currentLoc' a serverConfig.locations avec le chemin comme clef
 				serverConfig.locations[currentLoc.path] = currentLoc;
+				//reinitialise 'currentLoc' et marque la fin du bloc 'location'
 				currentLoc = locationConfig();
 				inLocation = false;
 			}
-			else if (key == "=")
-			{
-				iss >> currentLoc.path;
-				inLocation = true;
-			}
 		}
-		return serverConfig;
+		else if (key == "=")
+		{
+			//lit le chemin de l'emplacement et marque le debut d'un nouveau bloc 'locations'
+			iss >> currentLoc.path;
+			inLocation = true;
+		}
 	}
+	return serverConfig;
 }
