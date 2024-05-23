@@ -27,7 +27,9 @@ void handle_client(int client_fd) {
             if (path == "/") {
                 file_path = "./webroot/index.html"; // Fichier par défaut
             }
-
+			if (path == "/lol") {
+                file_path = "./webroot/test.html"; // Fichier par défaut
+            }
             std::ifstream file(file_path);
             if (file) {
                 std::stringstream content;
