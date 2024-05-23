@@ -23,7 +23,7 @@ void handle_client(int client_fd) {
         if (method == "GET") {
             std::string file_path = path;
             if (path == "/") {
-                file_path = "www/html/index.html"; // Fichier par défaut
+                file_path = "../www/html/index.html"; // Fichier par défaut
             }
 
             std::ifstream file(file_path);
