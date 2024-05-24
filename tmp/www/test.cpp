@@ -93,6 +93,7 @@ int main(int ac, char **av)
 
 	while (true)
 	{
+		activity = select(max_sd + 1, &readfds, NULL, NULL, NULL);
 		if ((client_fd = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addr_len)) < 0)
 		{
 			perror("accept");
