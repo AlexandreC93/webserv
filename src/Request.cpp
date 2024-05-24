@@ -1,4 +1,5 @@
-#include "Request.hpp"
+#include "../include/Request.hpp"
+#include "../include/utils.hpp"
 #include <sstream>
 
 void Request::parse(const std::string& rawRequest) {
@@ -23,7 +24,7 @@ void Request::parse(const std::string& rawRequest) {
     // Parse the body
     if (headers.find("Content-Length") != headers.end()) {
         std::string contentLength = headers["Content-Length"];
-        int length = std::stoi(contentLength);
+        int length = string_to_int(contentLength);
         body.resize(length);
         stream.read(&body[0], length);
     }

@@ -2,7 +2,9 @@
 #define HANDLER_HPP
 
 #include <string>
+#include "utils.hpp"
 
-std::string handleGetRequest();
+std::string handleGetRequest(const std::string& uri);
 
 #endif
+

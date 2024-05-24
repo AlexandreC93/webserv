@@ -1,11 +1,14 @@
-#include "Server.hpp"
-#include "Handler.hpp"
+#include "../include/Server.hpp"
+#include "../include/Request.hpp"
+#include "../include/Response.hpp"
+#include "../include/Handler.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <cstdlib>  // Pour EXIT_FAILURE et exit
 
 Server::Server(const std::string& configFile) {
     loadConfig(configFile);
@@ -13,6 +16,7 @@ Server::Server(const std::string& configFile) {
 
 void Server::loadConfig(const std::string& configFile) {
     // Implémentation pour charger le fichier de configuration
+    (void)configFile;  // Supprime l'avertissement de paramètre non utilisé pour l'instant
 }
 
 void Server::start() {
@@ -44,7 +48,7 @@ void Server::start() {
 
 void Server::handleConnections() {
     while (true) {
-        int new_socket = accept(server_fd, nullptr, nullptr);
+        int new_socket = accept(server_fd, NULL, NULL);
         if (new_socket < 0) {
             perror("accept");
             continue;
@@ -55,10 +59,32 @@ void Server::handleConnections() {
 }
 
 void Server::handleRequest(int client_socket) {
-    char buffer[1024] = {0};
-    read(client_socket, buffer, 1024);
-    std::cout << "Request received:\n" << buffer << std::endl;
+    char buffer[4096] = {0};
+    int valread = read(client_socket, buffer, 4096);
+    if (valread < 0) {
+        perror("read");
+        return;
+    }
 
-    std::string response = handleGetRequest();
-    send(client_socket, response.c_str(), response.length(), 0);
+    std::string rawRequest(buffer);
+    Request request;
+    request.parse(rawRequest);
+
+    Response response;
+
+    if (request.method == "GET") {
+        std::string responseContent = handleGetRequest(request.uri);
+        response.status_code = 200;
+        response.body = responseContent;
+        response.headers["Content-Type"] = "text/html";
+        response.headers["Content-Length"] = to_string(responseContent.length());
+    } else {
+        response.status_code = 405;
+        response.body = "405 - Method Not Allowed";
+        response.headers["Content-Type"] = "text/html";
+        response.headers["Content-Length"] = to_string(response.body.length());
+    }
+
+    std::string httpResponse = response.generate();
+    send(client_socket, httpResponse.c_str(), httpResponse.length(), 0);
 }
