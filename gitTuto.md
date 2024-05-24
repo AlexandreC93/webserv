@@ -25,6 +25,15 @@ Si on est dans 'develop' > Sous-Branche
 	git checkout NOM BRANCHE
 
 **PUSH TON TRAVAIL DANS DEVELOP** >> Push dans ta branche avant !!
+	git checkout NOM BRANCHE (develop ou main)
+
+**ENTRER DANS UNE SOUS-BRANCHE**
+	git checkout feature/NOM BRANCHE (config_parse/CGI/req_res)
+
+**SORTIR D'UNE BRANCHE OU D'UNE SOUS-BRANCHE**
+	git checkout NOM BRANCHE
+
+**PUSH TON TRAVAIL DANS DEVELOP QUAND TU ES DANS TA SOUS-BRANCHE** >> Push dans ta sous-branche avant!!
 	git checkout develop
 	git merge feature/NOM BRANCHE(config_parse/CGI/req_res)
 
