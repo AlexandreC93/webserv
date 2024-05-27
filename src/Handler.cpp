@@ -1,6 +1,8 @@
 #include "../include/Handler.hpp"
+#include "../include/Request.hpp"
 #include <fstream>
 #include <sstream>
+#include <string>
 #include <iostream>
 
 std::string handleGetRequest(const std::string &uri)
@@ -35,4 +37,52 @@ std::string handleGetRequest(const std::string &uri)
 	response += "\r\n" + content;
 
 	return response;
+}
+
+std::string handlePostRequest(const Request &request)
+{
+	std::string uploadDir = "uploads";
+    std::string responseContent = saveUploadedFile(request, uploadDir);
+	// Pour l'exemple, renvoie simplement les données reçues
+	// std::string responseContent = "Data received: " + request.body;
+	std::cout << request.body << std::endl;
+	std::string response = "HTTP/1.1 200 OK\r\n";
+	response += "Content-Type: text/html\r\n";
+	response += "Content-Length: " + to_string(responseContent.length()) + "\r\n";
+	response += "\r\n" + responseContent;
+
+	return response;
+}
+
+std::string handleDeleteRequest(const std::string &uri)
+{
+	std::string filepath = "." + uri;
+
+	if (std::remove(filepath.c_str()) != 0)
+	{
+		std::cout << filepath.c_str() << std::endl;
+
+		return "HTTP/1.1 404 Not Found\r\nContent-Type: text/html\r\n\r\n404 - Not Found";
+	}
+	std::string response = "HTTP/1.1 200 OK\r\n";
+	response += "Content-Type: text/html\r\n";
+	response += "Content-Length: 0\r\n";
+	response += "\r\n";
+
+	return response;
+}
+
+std::string saveUploadedFile(const Request& request, const std::string& uploadDir) {
+    // Simple implementation: assume body contains the file data directly
+    std::string filename = uploadDir + "/uploaded_file";
+    std::ofstream outFile(filename.c_str(), std::ios::binary);
+
+    if (!outFile) {
+        return "500 - Internal Server Error";
+    }
+	// std::cout << "outfilestr>>" << outFile.str() << std::endl;
+	std::cout << "filename>>" << filename << std::endl;
+    outFile.write(request.body.c_str(), request.body.size());
+    outFile.close();
+    return "File uploaded successfully";
 }
