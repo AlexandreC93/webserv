@@ -41,11 +41,9 @@ std::string handleGetRequest(const std::string &uri)
 
 std::string handlePostRequest(const Request &request)
 {
-	std::string uploadDir = "uploads";
+	std::string uploadDir = "upload";
     std::string responseContent = saveUploadedFile(request, uploadDir);
-	// Pour l'exemple, renvoie simplement les données reçues
-	// std::string responseContent = "Data received: " + request.body;
-	std::cout << request.body << std::endl;
+	// std::cout << request.body << std::endl;
 	std::string response = "HTTP/1.1 200 OK\r\n";
 	response += "Content-Type: text/html\r\n";
 	response += "Content-Length: " + to_string(responseContent.length()) + "\r\n";
@@ -73,16 +71,20 @@ std::string handleDeleteRequest(const std::string &uri)
 }
 
 std::string saveUploadedFile(const Request& request, const std::string& uploadDir) {
-    // Simple implementation: assume body contains the file data directly
-    std::string filename = uploadDir + "/uploaded_file";
-    std::ofstream outFile(filename.c_str(), std::ios::binary);
+    std::ostringstream responseStream;
 
-    if (!outFile) {
-        return "500 - Internal Server Error";
+    for (std::map<std::string, std::string>::const_iterator it = request.formData.begin(); it != request.formData.end(); ++it) {
+        std::string filename = uploadDir + "/" + it->first;
+        std::ofstream outFile(filename.c_str(), std::ios::binary);
+
+        if (!outFile) {
+            responseStream << "Failed to upload file: " << it->first << "\n";
+        } else {
+            outFile.write(it->second.c_str(), it->second.size());
+            outFile.close();
+            responseStream << "File uploaded successfully: " << it->first << "\n";
+        }
     }
-	// std::cout << "outfilestr>>" << outFile.str() << std::endl;
-	std::cout << "filename>>" << filename << std::endl;
-    outFile.write(request.body.c_str(), request.body.size());
-    outFile.close();
-    return "File uploaded successfully";
+
+    return responseStream.str();
 }

@@ -10,8 +10,10 @@ public:
     std::string uri;
     std::map<std::string, std::string> headers;
     std::string body;
+	std::map<std::string, std::string> formData;
 
     void parse(const std::string& rawRequest);
+	void parseMultipartFormData();
 };
 
 #endif
