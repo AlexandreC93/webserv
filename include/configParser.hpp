@@ -3,6 +3,7 @@
 # define CONFIG_HPP
 
 #include <iostream>
+#include <netinet/in.h>
 // # include <fstream>
 #include <fcntl.h>
 #include <cstring>
@@ -20,6 +21,38 @@
 // #include containers
 #include <vector>
 #include <map>
+
+class Location
+{
+	public:
+		Location();
+		Location(Location const &C);
+		~Location();
+
+		Location &operator=(Location const &C);
+
+	private:
+		std::string file_path;
+		std::string root;
+		std::vector<std::string> idx_files;
+};
+
+class Server
+{
+	public:
+		Server();
+		Server(Server const &C);
+		~Server();
+
+		Server &operator=(Server const &C);
+
+	private:
+		in_port_t listen_port;
+		in_addr_t host;
+		std::string server_name;
+		std::map<int, std::string> err_pages;
+		std::vector<Location> locations;
+};
 
 struct locationConfig
 {
