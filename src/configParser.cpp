@@ -1,31 +1,30 @@
 #include "../include/configParser.hpp"
 
-//std::pair est une structure de donnees qui peut contenir deux elements
-// de types differents. Elle est definie comme ca :
-//template <typename T1, typename T2>
-//struct pair {
-//	T1 first;
-//	T2 second;
-//};
+// std::pair est une structure de donnees qui peut contenir deux elements
+//  de types differents. Elle est definie comme ca :
+// template <typename T1, typename T2>
+// struct pair {
+// T1 first;
+// T2 second;
+// };
 
-
-serverConfig parseConfig(const std::string& filename)
+serverConfig parseConfig(const std::string &filename)
 {
 	serverConfig serverConfig;
-	std::ifstream configFile(filename); //ouvre le fichier de config en lecture
-	std::string line; //lis chaque ligne du fichier
-	locationConfig currentLoc; //stock temporairement la config de l'emplacement en cours de traitement
-	bool inLocation = false; //indique si on est a l'interieur d'un bloc 'location'
+	std::ifstream configFile(filename); // ouvre le fichier de config en lecture
+	std::string line;					// lis chaque ligne du fichier
+	locationConfig currentLoc;			// stock temporairement la config de l'emplacement en cours de traitement
+	// bool inLocation = true;			// indique si on est a l'interieur d'un bloc 'location'
 
-	while(std::getline(configFile, line)) //lis le fichier ligne par ligne
+	while (std::getline(configFile, line)) // lis le fichier ligne par ligne
 	{
-		std::istringstream iss(line); //creer un flux de chaine a partir de la ligne lue
-		std::string key; // stock le 1er mot de la ligne, qui est une clef
-		iss >> key; // lit la clef depuis le flux
-		//ignore les lignes contenant server ou location
+		std::istringstream iss(line); // creer un flux de chaine a partir de la ligne lue
+		std::string key;			  // stock le 1er mot de la ligne, qui est une clef
+		iss >> key;					  // lit la clef depuis le flux
+		// ignore les lignes contenant server ou location
 		if (key == "server" || key == "location")
-			continue ;
-		//stock les keys dans les variables
+			continue;
+		// stock les keys dans les variables
 		if (key == "listen")
 		{
 			iss >> serverConfig.listen_port;
@@ -38,21 +37,20 @@ serverConfig parseConfig(const std::string& filename)
 		}
 		else if (key == "root")
 		{
-			//verifie si on est dans un bloc 'location'
-			if (inLocation)
-				iss >> currentLoc.root;
-			else
-				std::cerr << "Error: root must be inside location block" << std::endl;
+			// verifie si on est dans un bloc 'location'
+			iss >> currentLoc.root;
 			iss.ignore(1, ';');
+			std::cout << "root : " << currentLoc.root << std::endl;
 		}
 		else if (key == "index")
 		{
 			std::string index_file;
-			//lis tous les fichiers d'index sur la ligne
-			while(iss >> index_file)
+			// lis tous les fichiers d'index sur la ligne
+			while (iss >> index_file)
 			{
-				//ajoute le fichier d'index dans la liste idx_files
+				// ajoute le fichier d'index dans la liste idx_files
 				currentLoc.idx_files.push_back(index_file);
+				std::cout << "Index : " << index_file << std::endl;
 			}
 			iss.ignore(1, ';');
 		}
@@ -60,36 +58,38 @@ serverConfig parseConfig(const std::string& filename)
 		{
 			int error_code;
 			std::string error_page;
-			while(iss >> error_code)
+			while (iss >> error_code)
 			{
-				//ajoute le code d'erreur a la map 'err_pages' avec une chaine vide comme valeur initiale
+				// ajoute le code d'erreur a la map 'err_pages' avec une chaine vide comme valeur initiale
 				serverConfig.err_pages[error_code] = "";
 			}
 			iss >> error_page;
 			iss.ignore(1, ';');
 			// auto permet de deduire automatiquement le type de 'code'
-			//code est une ref (&) a un element de la map
-			for (auto& code : serverConfig.err_pages)
+			// code est une ref (&) a un element de la map
+			for (auto &code : serverConfig.err_pages)
 			{
 				code.second = error_page;
 			}
 		}
 		else if (key == "}")
 		{
-			if (inLocation)
-			{
-				//ajoute 'currentLoc' a serverConfig.locations avec le chemin comme clef
+			// if (inLocation)
+			// {
+				// ajoute 'currentLoc' a serverConfig.locations avec le chemin comme clef
 				serverConfig.locations[currentLoc.path] = currentLoc;
-				//reinitialise 'currentLoc' et marque la fin du bloc 'location'
+				// reinitialise 'currentLoc' et marque la fin du bloc 'location'
+				std::cout << "Current loc :" << currentLoc.path << std::endl;
 				currentLoc = locationConfig();
-				inLocation = false;
-			}
+				// inLocation = false;
+			// }
 		}
 		else if (key == "=")
 		{
-			//lit le chemin de l'emplacement et marque le debut d'un nouveau bloc 'locations'
+			// lit le chemin de l'emplacement et marque le debut d'un nouveau bloc 'locations'
 			iss >> currentLoc.path;
-			inLocation = true;
+			std::cout << "Current loc :" << currentLoc.path << std::endl;
+			// inLocation = true;
 		}
 	}
 	return serverConfig;
