@@ -8,13 +8,37 @@
 // T2 second;
 // };
 
+std::ostream& operator<<(std::ostream& os, const locationConfig& loc)
+{
+    os << "file_path: " << loc.file_path << ", root: " << loc.root << ", idx_files: [";
+    for (size_t i = 0; i < loc.idx_files.size(); ++i)
+    {
+        os << loc.idx_files[i];
+        if (i < loc.idx_files.size() - 1)
+        {
+            os << ", ";
+        }
+    }
+    os << "]";
+    return os;
+}
+
+void removeSemicolon(std::string &str)
+{
+	while (!str.empty() && (str.back() == ';' || str.back() == '{' || str.back() == '}'))
+	{
+		str.pop_back();
+	}
+}
+
 serverConfig parseConfig(const std::string &filename)
 {
-	serverConfig serverConfig;
+	serverConfig sconfig;
 	std::ifstream configFile(filename); // ouvre le fichier de config en lecture
 	std::string line;					// lis chaque ligne du fichier
 	locationConfig currentLoc;			// stock temporairement la config de l'emplacement en cours de traitement
-	// bool inLocation = true;			// indique si on est a l'interieur d'un bloc 'location'
+	bool inLocation = false;			// indique si on est à l'intérieur d'un bloc 'location'
+	std::string currentLocationPath;	// stock le chemin de l'emplacement actuel
 
 	while (std::getline(configFile, line)) // lis le fichier ligne par ligne
 	{
@@ -22,75 +46,71 @@ serverConfig parseConfig(const std::string &filename)
 		std::string key;			  // stock le 1er mot de la ligne, qui est une clef
 		iss >> key;					  // lit la clef depuis le flux
 		// ignore les lignes contenant server ou location
-		if (key == "server" || key == "location")
+		if (key == "server")
 			continue;
 		// stock les keys dans les variables
-		if (key == "listen")
+		if (key == "location")
 		{
-			iss >> serverConfig.listen_port;
+			inLocation = true;
+			std::getline(iss >> std::ws, currentLocationPath);
+			currentLoc = locationConfig(); // Réinitialise currentLoc pour la nouvelle section location
+			currentLoc.file_path = filename;
+			continue; // Passe à la ligne suivante pour traiter l'intérieur du bloc location
+		}
+		if (key == "}" && inLocation)
+		{
+			inLocation = false;
+			sconfig.locations[currentLocationPath] = currentLoc;
+			std::cout << "Location : " << currentLocationPath << std::endl;
+			std::cout << "File path: " << currentLoc.file_path << std::endl;
+			continue; // Passe à la ligne suivante après avoir fermé un bloc location
+		}
+		if (inLocation)
+		{
+			if (key == "root")
+			{
+				iss >> currentLoc.root;
+				removeSemicolon(currentLoc.root);
+				std::cout << "root : " << currentLoc.root << std::endl;
+			}
+			else if (key == "index")
+			{
+				std::string index_file;
+				// lis tous les fichiers d'index sur la ligne
+				while (iss >> index_file)
+				{
+					// ajoute le fichier d'index dans la liste idx_files
+					removeSemicolon(index_file);
+					currentLoc.idx_files.push_back(index_file);
+					std::cout << "Index : " << index_file << std::endl;
+				}
+			}
+		}
+		else if (key == "listen")
+		{
+			iss >> sconfig.listen_port;
 			iss.ignore(1, ';');
 		}
 		else if (key == "server_name")
 		{
-			iss >> serverConfig.server_name;
-			iss.ignore(1, ';');
+			iss >> sconfig.server_name;
+			removeSemicolon(sconfig.server_name);
 		}
-		else if (key == "root")
+		else if (key == "error_page")
 		{
-			// verifie si on est dans un bloc 'location'
-			iss >> currentLoc.root;
-			iss.ignore(1, ';');
-			std::cout << "root : " << currentLoc.root << std::endl;
-		}
-		else if (key == "index")
-		{
-			std::string index_file;
-			// lis tous les fichiers d'index sur la ligne
-			while (iss >> index_file)
-			{
-				// ajoute le fichier d'index dans la liste idx_files
-				currentLoc.idx_files.push_back(index_file);
-				std::cout << "Index : " << index_file << std::endl;
-			}
-			iss.ignore(1, ';');
-		}
-		else if ("error_page")
-		{
-			int error_code;
 			std::string error_page;
-			while (iss >> error_code)
+			while (iss >> error_page)
 			{
-				// ajoute le code d'erreur a la map 'err_pages' avec une chaine vide comme valeur initiale
-				serverConfig.err_pages[error_code] = "";
+				std::stringstream ss(error_page);
+				int error_code;
+				if (ss >> error_code)
+				{
+					sconfig.err_pages[error_code] = error_page;
+					removeSemicolon(sconfig.err_pages[error_code]);
+					std::cout << "Err_page : " << sconfig.err_pages[error_code] << std::endl;
+				}
 			}
-			iss >> error_page;
-			iss.ignore(1, ';');
-			// auto permet de deduire automatiquement le type de 'code'
-			// code est une ref (&) a un element de la map
-			for (auto &code : serverConfig.err_pages)
-			{
-				code.second = error_page;
-			}
-		}
-		else if (key == "}")
-		{
-			// if (inLocation)
-			// {
-				// ajoute 'currentLoc' a serverConfig.locations avec le chemin comme clef
-				serverConfig.locations[currentLoc.path] = currentLoc;
-				// reinitialise 'currentLoc' et marque la fin du bloc 'location'
-				std::cout << "Current loc :" << currentLoc.path << std::endl;
-				currentLoc = locationConfig();
-				// inLocation = false;
-			// }
-		}
-		else if (key == "=")
-		{
-			// lit le chemin de l'emplacement et marque le debut d'un nouveau bloc 'locations'
-			iss >> currentLoc.path;
-			std::cout << "Current loc :" << currentLoc.path << std::endl;
-			// inLocation = true;
 		}
 	}
-	return serverConfig;
+	return sconfig;
 }

@@ -14,7 +14,7 @@ void testConfigParser() {
     // Parcourir les emplacements (locations) dans la configuration
     std::map<std::string, locationConfig>::const_iterator it;
     for (it = config.locations.begin(); it != config.locations.end(); ++it) {
-		std::cout << "Location path: " << it->second.path << std::endl;
+		// std::cout << "Location path: " << it->second.path << std::endl;
         std::cout << "Root: " << it->second.root << std::endl;
         std::cout << "Index files: ";
 
@@ -27,11 +27,11 @@ void testConfigParser() {
     }
 
     // Affichage des pages d'erreur
-    std::cout << "Error pages: " << std::endl;
-    std::map<int, std::string>::const_iterator err_it;
-    for (err_it = config.err_pages.begin(); err_it != config.err_pages.end(); ++err_it) {
-        std::cout << "Error code: " << err_it->first << ", Page: " << err_it->second << std::endl;
-    }
+    // std::cout << "Error pages: " << std::endl;
+    // std::map<int, std::string>::const_iterator err_it;
+    // for (err_it = config.err_pages.begin(); err_it != config.err_pages.end(); ++err_it) {
+    //     std::cout << "Error code: " << err_it->first << ", Page: " << err_it->second << std::endl;
+    // }
 }
 
 // int main() {
