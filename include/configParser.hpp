@@ -1,9 +1,10 @@
 
-#ifndef CONFIG_HPP
-# define CONFIG_HPP
+#ifndef CONFIG_PARSER_HPP
+# define CONFIG_PARSER_HPP
 
 #include <iostream>
 #include <netinet/in.h>
+#include "configServer.hpp"
 // # include <fstream>
 #include <fcntl.h>
 #include <cstring>
@@ -21,65 +22,24 @@
 // #include containers
 #include <vector>
 #include <map>
+#include "configServer.hpp"
 
-class Location
+class ConfigParse
 {
 	public:
-		Location();
-		Location(Location const &C);
-		~Location();
+		ConfigParse(const std::string &filename);
+		~ConfigParse();
 
-		Location &operator=(Location const &C);
-
-	private:
-		std::string file_path;
-		std::string root;
-		std::vector<std::string> idx_files;
-};
-
-class Server
-{
-	public:
-		Server();
-		Server(Server const &C);
-		~Server();
-
-		Server &operator=(Server const &C);
+		std::vector<Server> getServers() const;
 
 	private:
-		in_port_t listen_port;
-		in_addr_t host;
-		std::string server_name;
-		std::map<int, std::string> err_pages;
-		std::vector<Location> locations;
+		std::vector<Server> servers;
+		void parseConfigFile(const std::string &fileName);
+		void parseServerBlock(std::ifstream &ifs, Server &server);
+		void parseLocationBlock(std::ifstream &ifs, Server &server, const std::string &locationPath);
 };
-
-struct locationConfig
-{
-	std::string file_path; //chemin de l'emplacement
-	std::string root; //racine de l'emplacement
-	std::vector<std::string> idx_files; //liste de fichiers d'index pour l'emplacement
-};
-
-struct serverConfig
-{
-	int listen_port; //port d'ecoute du server
-	std::string server_name; //nom du server
-	//err_pages est une std::map qui associe des clés de type int à des valeurs de type std::string :
-	std::map<int, std::string> err_pages; //map associant des codes d'erreur a des pages d'erreur
-	std::map<std::string, locationConfig> locations; // map associant des chemins d'emplacement a des config d'emplacement
-};
-
-void	removeSemicolon(std::string &str);
-serverConfig parseConfig(const std::string& filename);
-
-std::ostream& operator<<(std::ostream& os, const locationConfig& loc);
 
 #endif
-
-
-
-
 
 // serverConfig parseConfig(const std::string &filename)
 // {
