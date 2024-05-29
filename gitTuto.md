@@ -25,6 +25,9 @@ Branche 'req_res' : Alex
 **PUSH TON TRAVAIL DANS TA SOUS-BRANCHE**
 	git push origin feature/NOM BRANCHE(config_parse/CGI/req_res)
 
+**PUSH DANS DEVELOP A PARTIR DE DEVELOP**
+	git push origin develop
+
 **PUSH TON TRAVAIL DANS DEVELOP QUAND TU ES DANS TA SOUS-BRANCHE**
 >> PUSH DANS TA SOUS BRANCHE AVANT!!!
 	git checkout develop
