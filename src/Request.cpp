@@ -6,79 +6,101 @@
 
 void Request::parse(const std::string &rawRequest)
 {
-	std::istringstream stream(rawRequest);
-	std::string line;
+    std::istringstream stream(rawRequest);
+    std::string line;
 
-	// Parse the request line
-	std::getline(stream, line);
-	std::istringstream requestLine(line);
-	requestLine >> method >> uri;
+    // Parse the request line
+    std::getline(stream, line);
+    std::istringstream requestLine(line);
+    requestLine >> method >> uri;
+    // std::cout << "line" << line << std::endl;
+    // std::cout << "method" << method << std::endl;
+    // std::cout << "uri" << uri << std::endl;
 
-	// Parse the headers
-	while (std::getline(stream, line) && line != "\r")
-	{
-		std::cout << "line>> " << line << std::endl;
-		size_t pos = line.find(": ");
-		if (pos != std::string::npos)
-		{
-			std::string headerName = line.substr(0, pos);
-			std::string headerValue = line.substr(pos + 2);
-			headers[headerName] = headerValue;
-			// std::cout << "headerName>> " << headerName << std::endl;
-			// std::cout << "headerValue>> " << headerValue << std::endl;
-		}
-	}
+    // Parse the headers
+    while (std::getline(stream, line) && line != "\r")
+    {
+        size_t pos = line.find(": ");
+        if (pos != std::string::npos)
+        {
+            std::string headerName = line.substr(0, pos);
+            std::string headerValue = line.substr(pos + 2);
+            headers[headerName] = headerValue;
+        }
+    }
 
-	// Parse the body
-	if (headers.find("Content-Length") != headers.end()) {
+    // Parse the body
+    if (headers.find("Content-Length") != headers.end())
+    {
         std::string contentLength = headers["Content-Length"];
-        int length = std::atoi(contentLength.c_str());
+
+        int length = atoi(contentLength.c_str());
         body.resize(length);
         stream.read(&body[0], length);
+        std::cout << "bodyparse" << body << "findubody" << std::endl;
 
-        if (headers["Content-Type"].find("multipart/form-data") != std::string::npos) {
-			std::cout << "DATATATTTATATATATATATA" << std::endl;
+        if (headers["Content-Type"].find("multipart/form-data") != std::string::npos)
+        {
             parseMultipartFormData();
         }
     }
 }
 
-void Request::parseMultipartFormData() {
+void Request::parseMultipartFormData()
+{
     std::string boundary = "--" + headers["Content-Type"].substr(headers["Content-Type"].find("boundary=") + 9);
     std::istringstream stream(body);
     std::string line;
+    std::string contentDisposition;
+    std::string contentType;
+    std::ostringstream valueStream;
+    std::string filename;
 
-    // while (std::getline(stream, line) && line != boundary) {
-    //     // Skip the preamble
-    // }
-				// std::cout << "LOOOOOOOOP" << std::endl;
+    std::cout << "Boundary: " << boundary << std::endl;
+    std::cout << "Body Content:\n"
+              << body << std::endl; // Debug: print the entire body content
 
-    while (std::getline(stream, line) && line != boundary + "--") {
-        if (line == boundary) {
-            std::string contentDisposition;
+    while (std::getline(stream, line))
+    {
+        std::cout << "Line: " << line << std::endl; // Debug: print each line
+        if (line.find(boundary) != std::string::npos)
+        {
             std::getline(stream, contentDisposition);
-            std::string contentType;
-            std::getline(stream, contentType);
+            std::cout << "Content-Disposition: " << contentDisposition << std::endl; // Debug: print content disposition
 
             std::getline(stream, line); // Skip the empty line
-			std::cout << "LINEbefore: " << line << std::endl;
-            std::ostringstream valueStream;
-            while (std::getline(stream, line) && line != boundary && line != boundary + "--") {
-                valueStream << line << "\n";
-            }
-			std::cout << "LINEafter: " << line << std::endl;
-            std::string value = valueStream.str();
-            if (!value.empty() && value[value.size() - 1] == '\n') {
-                value.erase(value.size() - 1);
-            }
 
-            // Extract filename from content disposition
-            size_t pos = contentDisposition.find("filename=");
-            if (pos != std::string::npos) {
-                std::string filename = contentDisposition.substr(pos + 10);
-                filename = filename.substr(0, filename.find("\""));
+            if (contentDisposition.find("filename=") != std::string::npos)
+            {
+                std::getline(stream, contentType);
+                std::cout << "Content-Type: " << contentType << std::endl; // Debug: print content type
 
-                formData[filename] = value;
+                std::getline(stream, line); // Skip the empty line
+                valueStream.str("");        // Clear the valueStream for new content
+                valueStream.clear();
+
+                while (std::getline(stream, line) && line.find(boundary) == std::string::npos)
+                {
+                    valueStream << line << "\n";
+                }
+
+                std::string value = valueStream.str();
+                if (!value.empty() && value[value.size() - 1] == '\n')
+                {
+                    value.erase(value.size() - 1);
+                }
+
+                size_t pos = contentDisposition.find("filename=");
+                if (pos != std::string::npos)
+                {
+                    filename = contentDisposition.substr(pos + 10);
+                    filename = filename.substr(0, filename.find("\""));
+                    formData[filename] = value;
+
+                    std::cout << "Filename: " << filename << std::endl; // Debug: print filename
+                    std::cout << "File Content: " << value << std::endl;
+                    std::cout << "File Content: " << value << std::endl; // Debug: print file content
+                }
             }
         }
     }
