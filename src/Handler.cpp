@@ -73,8 +73,12 @@ std::string handleDeleteRequest(const std::string &uri)
 std::string saveUploadedFile(const Request& request, const std::string& uploadDir) {
     std::ostringstream responseStream;
 
+		// std::cout << "filename>" << std::endl;
+
     for (std::map<std::string, std::string>::const_iterator it = request.formData.begin(); it != request.formData.end(); ++it) {
         std::string filename = uploadDir + "/" + it->first;
+		std::cout << "filename>" << filename << std::endl;
+		std::cout << "itfirst>" << it->first << std::endl;
         std::ofstream outFile(filename.c_str(), std::ios::binary);
 
         if (!outFile) {

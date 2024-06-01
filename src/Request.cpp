@@ -6,28 +6,28 @@
 
 void Request::parse(const std::string &rawRequest)
 {
-	std::istringstream stream(rawRequest);
-	std::string line;
+    std::istringstream stream(rawRequest);
+    std::string line;
 
-	// Parse the request line
-	std::getline(stream, line);
-	std::istringstream requestLine(line);
-	requestLine >> method >> uri;
+    // Parse the request line
+    std::getline(stream, line);
+    std::istringstream requestLine(line);
+    requestLine >> method >> uri;
+    // std::cout << "line" << line << std::endl;
+    // std::cout << "method" << method << std::endl;
+    // std::cout << "uri" << uri << std::endl;
 
-	// Parse the headers
-	while (std::getline(stream, line) && line != "\r")
-	{
-		std::cout << "line>> " << line << std::endl;
-		size_t pos = line.find(": ");
-		if (pos != std::string::npos)
-		{
-			std::string headerName = line.substr(0, pos);
-			std::string headerValue = line.substr(pos + 2);
-			headers[headerName] = headerValue;
-			// std::cout << "headerName>> " << headerName << std::endl;
-			// std::cout << "headerValue>> " << headerValue << std::endl;
-		}
-	}
+    // Parse the headers
+    while (std::getline(stream, line) && line != "\r")
+    {
+        size_t pos = line.find(": ");
+        if (pos != std::string::npos)
+        {
+            std::string headerName = line.substr(0, pos);
+            std::string headerValue = line.substr(pos + 2);
+            headers[headerName] = headerValue;
+        }
+    }
 
 	// Parse the body
 	if (headers.find("Content-Length") != headers.end())
