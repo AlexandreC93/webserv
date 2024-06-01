@@ -51,8 +51,12 @@
 		"streambuf": "cpp",
 		"typeinfo": "cpp",
 		"ctime": "cpp",
+<<<<<<< HEAD
 		"map": "cpp",
 		"bitset": "cpp",
 		"regex": "cpp"
+=======
+		"map": "cpp"
+>>>>>>> 505efde285c019eda87a4bd7a45aceb51576f450
 	}
 }

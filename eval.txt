@@ -1,0 +1,107 @@
+Pour répondre correctement à la fiche d'évaluation de votre projet, vous devez gérer plusieurs aspects liés à la configuration, à la gestion des requêtes, à la stabilité du serveur, et à la conformité avec les spécifications HTTP. Voici une liste détaillée de tout ce que vous devez gérer :
+
+Configuration du Serveur
+Choix du port et de l'hôte pour chaque serveur
+
+Assurez-vous que chaque serveur peut être configuré pour écouter sur des ports et des hôtes spécifiques.
+Configuration des noms de serveurs
+
+Permettez la configuration des noms de serveurs (server_names).
+Définir un serveur par défaut pour chaque combinaison hôte
+
+Le premier serveur pour un hôte
+doit être le serveur par défaut.
+Pages d'erreur par défaut
+
+Configurez les pages d'erreur par défaut (ex : 404, 500).
+Limiter la taille du corps des clients
+
+Configurez une limite pour la taille du corps des requêtes POST/PUT.
+Configurer les routes avec des règles spécifiques
+
+Méthodes HTTP acceptées (GET, POST, DELETE, etc.).
+Redirections HTTP.
+Répertoires et fichiers spécifiques à servir pour certaines routes.
+Listing des répertoires.
+Fichier par défaut pour les répertoires.
+Exécution de CGI en fonction des extensions de fichiers.
+Gestion des uploads de fichiers.
+Gestion des Requêtes et des Réponses
+Méthodes HTTP
+
+Implémenter les méthodes GET, POST et DELETE.
+Gérer les méthodes inconnues sans crash.
+Status Codes
+
+Retourner les codes de statut HTTP appropriés (200, 201, 204, 400, 404, 405, 500, etc.).
+Gestion des Headers
+
+Assurez-vous que les headers de la requête et de la réponse sont correctement gérés (Content-Length, Content-Type, etc.).
+Gestion des Erreurs
+
+Ne jamais faire planter le serveur sur une requête mal formée ou un problème avec CGI.
+Gérer les erreurs dans les scripts CGI.
+I/O Multiplexing
+Fonction de Multiplexage (select, poll, epoll, etc.)
+
+Utilisez select() ou un équivalent pour gérer les connexions multiples.
+Implémentation correcte de select() ou équivalent
+
+Le multiplexeur doit être dans la boucle principale et vérifier les descripteurs de fichiers pour la lecture et l'écriture en même temps.
+Une seule lecture ou écriture par client par select().
+Gestion des erreurs pour les opérations read/recv/write/send
+
+Vérifiez les valeurs de retour et gérez les erreurs (vérifiez les valeurs -1 et 0).
+Si une erreur est détectée, supprimez le client.
+Ne pas vérifier errno après read/recv/write/send.
+Tests de Base avec telnet et curl
+Requêtes GET, POST et DELETE
+
+Vérifiez que chaque méthode fonctionne correctement.
+Vérifiez les réponses appropriées pour chaque méthode.
+Requêtes Inconnues
+
+Assurez-vous que les requêtes avec des méthodes inconnues ne font pas planter le serveur.
+Upload et Download de Fichiers
+
+Vérifiez que les fichiers peuvent être uploadés et téléchargés correctement.
+Gestion du CGI
+Fonctionnement du CGI
+Assurez-vous que le serveur fonctionne correctement avec CGI.
+Testez avec les méthodes GET et POST.
+Vérifiez que le CGI est exécuté dans le bon répertoire.
+Gérez les erreurs dans les scripts CGI sans faire planter le serveur.
+Tests avec un Navigateur
+Compatibilité avec un site web statique
+
+Assurez-vous que le serveur peut servir un site web statique complet.
+Vérifiez les headers de requête et de réponse.
+Gestion des URLs et des redirections
+
+Vérifiez la gestion des mauvaises URLs, des redirections et des listings de répertoires.
+Tests de Ports et de Configuration Multiple
+Configuration Multiple de Ports et de Serveurs
+
+Vérifiez que plusieurs serveurs peuvent écouter sur des ports différents.
+Vérifiez que plusieurs serveurs peuvent écouter sur des hôtes différents.
+Gestion des conflits de ports
+
+Assurez-vous que la configuration ne permet pas la même configuration de port pour plusieurs serveurs.
+Lancement de multiples serveurs
+
+Assurez-vous que plusieurs configurations de serveur peuvent être lancées en même temps sans conflits.
+Tests de Stress avec Siege
+Tests de Disponibilité
+
+Assurez-vous que la disponibilité est supérieure à 99,5% pour une requête GET simple.
+Tests de Fuites de Mémoire
+
+Vérifiez qu'il n'y a pas de fuite de mémoire (la consommation de mémoire ne doit pas augmenter indéfiniment).
+Tests de Connexions Suspendues
+
+Assurez-vous qu'il n'y a pas de connexions suspendues.
+Exécution Indéfinie avec Siege
+
+Le serveur doit être capable de fonctionner indéfiniment sous siege -b sans nécessiter de redémarrage.
+Conclusion
+En gérant tous ces aspects, vous serez en mesure de répondre correctement aux exigences de l'évaluation de votre projet. Assurez-vous de tester rigoureusement chaque fonctionnalité et de vérifier que votre serveur est robuste et conforme aux spécifications HTTP.
