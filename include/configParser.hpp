@@ -1,42 +1,63 @@
-
-#ifndef CONFIG_HPP
-# define CONFIG_HPP
+#ifndef CONFIG_PARSER_HPP
+#define CONFIG_PARSER_HPP
 
 #include <iostream>
-// # include <fstream>
-#include <fcntl.h>
-#include <cstring>
-#include <string>
-#include <unistd.h>
-#include <dirent.h>
-#include <sstream>
-// # include <bits/stdc++.h>
-#include <cstdlib>
 #include <fstream>
-#include <sstream>
-#include <cctype>
-#include <ctime>
-#include <cstdarg>
-// #include containers
+#include <string>
 #include <vector>
 #include <map>
+#include <limits>
+#include <sstream>
 
-struct locationConfig
-{
-	std::string path; //chemin de l'emplacement
-	std::string root; //racine de l'emplacement
-	std::vector<std::string> idx_files; //liste de fichiers d'index pour l'emplacement
+class LocationBlock {
+public:
+	LocationBlock();
+	~LocationBlock();
+
+	std::string location_path;
+	std::string root;
+	std::string index;
+	std::string allow_methods;
+	std::string autoindex;
+	std::string upload_store;
+	std::string cgi_path;
+	std::string cgi_ext;
+	std::string cgi;
+	std::string ret;
 };
 
-struct serverConfig
-{
-	int listen_port; //port d'ecoute du server
-	std::string server_name; //nom du server
-	//err_pages est une std::map qui associe des clés de type int à des valeurs de type std::string :
-	std::map<int, std::string> err_pages; //map associant des codes d'erreur a des pages d'erreur
-	std::map<std::string, locationConfig> locations; // map associant des chemins d'emplacement a des connfig d'emplacement
+class ServerBlock {
+public:
+	ServerBlock();
+	~ServerBlock();
+
+	int listen;
+	std::string path;
+	std::string server_name;
+	std::string host;
+	std::string root;
+	std::string index;
+	std::string default_server;
+	std::string client_max_body_size;
+	std::map<int, std::string> error_page;
+	std::vector<LocationBlock> locations;
 };
 
-serverConfig parseConfig(const std::string& filename);
+class ConfigParser {
+public:
+	ConfigParser(const std::string& filename);
+	~ConfigParser();
+
+	std::vector<ServerBlock> parseConfig();
+
+private:
+	std::ifstream file;
+	std::vector<ServerBlock> serverBlocks;
+	std::string filename;
+
+	void parseServerBlock();
+	void parseLocationBlock(ServerBlock& serverBlock);
+	std::string getNextToken();
+};
 
 #endif
