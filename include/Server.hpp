@@ -14,7 +14,7 @@ public:
 private:
     int server_fd;
     struct sockaddr_in address;
-    // std::map<std::string, LocationConfig> locations;
+    std::map<std::string, LocationConfig> locations;
     std::map<int, std::string> error_pages;
 
     void loadConfig(const std::string& configFile);

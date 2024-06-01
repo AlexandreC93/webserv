@@ -1,4 +1,4 @@
-#include "Response.hpp"
+#include "../include/Response.hpp"
 #include <sstream>
 
 std::string Response::generate() {
@@ -8,8 +8,8 @@ std::string Response::generate() {
     response << "HTTP/1.1 " << status_code << " " << get_status_message(status_code) << "\r\n";
 
     // Headers
-    for (const auto& header : headers) {
-        response << header.first << ": " << header.second << "\r\n";
+    for (std::map<std::string, std::string>::const_iterator it = headers.begin(); it != headers.end(); ++it) {
+        response << it->first << ": " << it->second << "\r\n";
     }
 
     // End of headers
