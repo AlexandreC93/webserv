@@ -19,8 +19,11 @@ public:
 	std::string index;
 	std::string allow_methods;
 	std::string autoindex;
+	std::string upload_store;
 	std::string cgi_path;
 	std::string cgi_ext;
+	std::string cgi;
+	std::string ret;
 };
 
 class ServerBlock {
@@ -34,7 +37,9 @@ public:
 	std::string host;
 	std::string root;
 	std::string index;
-	std::string error_page;
+	std::string default_server;
+	std::string client_max_body_size;
+	std::map<int, std::string> error_page;
 	std::vector<LocationBlock> locations;
 };
 
