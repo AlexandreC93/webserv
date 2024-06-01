@@ -22,7 +22,6 @@ Server::Server(const std::string &configFile)
 
 void Server::loadConfig(const std::string &configFile)
 {
-	// Implémentation pour charger le fichier de configuration
 	(void)configFile; // Supprime l'avertissement de paramètre non utilisé pour l'instant
 }
 
