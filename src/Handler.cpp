@@ -43,7 +43,7 @@ std::string handlePostRequest(const Request &request)
 {
 	std::string uploadDir = "upload";
     std::string responseContent = saveUploadedFile(request, uploadDir);
-	// std::cout << request.body << std::endl;
+	std::cout << "request.body" << request.body << std::endl;
 	std::string response = "HTTP/1.1 200 OK\r\n";
 	response += "Content-Type: text/html\r\n";
 	response += "Content-Length: " + to_string(responseContent.length()) + "\r\n";
@@ -89,6 +89,5 @@ std::string saveUploadedFile(const Request& request, const std::string& uploadDi
             responseStream << "File uploaded successfully: " << it->first << "\n";
         }
     }
-
     return responseStream.str();
 }

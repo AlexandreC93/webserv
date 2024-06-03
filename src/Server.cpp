@@ -29,13 +29,13 @@ Server::Server(const std::string &configFile)
 
 void Server::start()
 {
+	Request req;
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd == 0)
     {
         perror("socket failed");
         exit(EXIT_FAILURE);
     }
-
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(8080);
@@ -131,6 +131,7 @@ void Server::handleConnections()
                         }
                         else if (request.method == "POST")
                         {
+							std::cout << "Request POST" << std::endl;
                             std::string responseContent = handlePostRequest(request);
                             response.status_code = 200;
                             response.body = responseContent;

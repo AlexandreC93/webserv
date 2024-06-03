@@ -1,5 +1,6 @@
 #include "../include/Server.hpp"
 #include "../include/configParser.hpp"
+#include "../include/Request.hpp"
 #include <stdlib.h>
 #include <signal.h>
 
@@ -34,10 +35,12 @@ int main(int argc, char **argv) {
     (void)argc;
     (void)argv;
 
+	Server server("./config/main.conf");
     ConfigParser parser("./config/main.conf");
 	std::vector<ServerBlock> serverBlocks = parser.parseConfig();
 	parser.mainParse();
-	std::cout << "kugsdjkfgaskjgfghfashfhjs" << serverBlocks[0] << std::endl;
+	server.start();
+	std::cout << "kugsdjkfgaskjgfghfashfhjs" << std::endl;
 
     return 0;
 }
