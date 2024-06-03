@@ -17,9 +17,9 @@ private:
     std::map<std::string, LocationConfig> locations;
     std::map<int, std::string> error_pages;
 
-    void loadConfig(const std::string& configFile);
+    // void loadConfig(const std::string& configFile);
     void handleConnections();
-    void handleRequest(int client_socket);
+    // void handleRequest(int client_socket);
 };
 
 #endif

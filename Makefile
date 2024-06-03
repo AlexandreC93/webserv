@@ -1,7 +1,7 @@
 NAME = webserv
 CXX = g++
-#WWW =  -Wall -Wextra -Werror $(WWW)
-CXXFLAGS = -Wall -Wextra -Werror -lpthread -std=c++98
+#WWW =  -Wall -Wextra -Werror $(WWW) -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -lpthread 
 SRCS = $(wildcard src/*.cpp)
 OBJS = $(SRCS:.cpp=.o)
 INCLUDES = -I include

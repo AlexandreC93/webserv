@@ -8,7 +8,8 @@ ServerBlock::ServerBlock() {}
 ServerBlock::~ServerBlock() {}
 
 ConfigParser::ConfigParser(const std::string& filename) : filename(filename) {
-	file.open(filename.c_str());
+	file.open(filename);
+	std::cout << filename << std::endl;
 	if (!file.is_open()) {
 		std::cerr << "Erreur lors de l'ouverture du fichier: " << filename << std::endl;
 		exit(EXIT_FAILURE); // Sortie du programme avec erreur
@@ -117,9 +118,7 @@ std::string ConfigParser::getNextToken() {
 }
 
 
-int main() {
-	ConfigParser parser("../config/main.conf");
-	std::vector<ServerBlock> serverBlocks = parser.parseConfig();
+void ConfigParser::mainParse(void) {
 
 	// Affichage des informations récupérées
 	for (const auto& serverBlock : serverBlocks) {
@@ -151,6 +150,5 @@ int main() {
 		}
 		std::cout << std::endl;
 	}
-
-	return 0;
+	// std::cout << "L:IFHSKFDHKLS " << std::endl;
 }

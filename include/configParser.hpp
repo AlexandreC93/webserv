@@ -47,13 +47,13 @@ class ConfigParser {
 public:
 	ConfigParser(const std::string& filename);
 	~ConfigParser();
-
+	void mainParse(void);
 	std::vector<ServerBlock> parseConfig();
 
 private:
 	std::ifstream file;
-	std::vector<ServerBlock> serverBlocks;
 	std::string filename;
+	std::vector<ServerBlock> serverBlocks;
 
 	void parseServerBlock();
 	void parseLocationBlock(ServerBlock& serverBlock);

@@ -3,6 +3,7 @@
 #include "../include/Response.hpp"
 #include "../include/Handler.hpp"
 #include "../include/utils.hpp"
+#include "../include/configParser.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -16,15 +17,15 @@
 
 Server::Server(const std::string &configFile)
 {
-    loadConfig(configFile);
+	(void)configFile;
+    // loadConfig(configFile);
     // appelle le parsing du .conf
 }
 
-void Server::loadConfig(const std::string &configFile)
-{
-    // Implémentation pour charger le fichier de configuration
-    (void)configFile; // Supprime l'avertissement de paramètre non utilisé pour l'instant
-}
+// void Server::loadConfig(std::string &configFile)
+// {
+//     configParser(configFile);
+// }
 
 void Server::start()
 {
