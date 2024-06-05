@@ -117,6 +117,10 @@ std::string ConfigParser::getNextToken() {
 	return "";
 }
 
+// std::vector<ServerBlock> ConfigParser::getServerBlocks() const
+// {
+//     return serverBlocks;
+// }
 
 void ConfigParser::mainParse(void) {
 

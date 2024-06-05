@@ -3,7 +3,6 @@
 #include "../include/Response.hpp"
 #include "../include/Handler.hpp"
 #include "../include/utils.hpp"
-#include "../include/configParser.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -15,12 +14,14 @@
 #include <vector>
 #include <cstdio>
 
-Server::Server(const std::string &configFile)
-{
-	(void)configFile;
-    // loadConfig(configFile);
-    // appelle le parsing du .conf
-}
+Server::Server(const ServerBlock& config) : serverBlock(config) {}
+
+// Server::Server(const std::string &configFile)
+// {
+// 	(void)configFile;
+//     // loadConfig(configFile);
+//     // appelle le parsing du .conf
+// }
 
 // void Server::loadConfig(std::string &configFile)
 // {
@@ -29,6 +30,7 @@ Server::Server(const std::string &configFile)
 
 void Server::start()
 {
+	// ServerBlock serverBlock;
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd == 0)
     {
@@ -38,7 +40,7 @@ void Server::start()
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(8080);
+    address.sin_port = htons(serverBlock.listen);
 
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
@@ -54,7 +56,7 @@ void Server::start()
         exit(EXIT_FAILURE);
     }
 
-    std::cout << "Server listening on port 8080" << std::endl;
+    std::cout << "Server listening on port " << serverBlock.listen << std::endl;
     handleConnections();
 }
 
@@ -123,7 +125,7 @@ void Server::handleConnections()
 
                         if (request.method == "GET")
                         {
-                            std::string responseContent = handleGetRequest(request.uri);
+                            std::string responseContent = handleGetRequest(this->serverBlock, request.uri);
                             response.status_code = 200;
                             response.body = responseContent;
                             response.headers["Content-Type"] = "text/html";
@@ -131,7 +133,7 @@ void Server::handleConnections()
                         }
                         else if (request.method == "POST")
                         {
-                            std::string responseContent = handlePostRequest(request);
+                            std::string responseContent = handlePostRequest(this->serverBlock, request);
                             response.status_code = 200;
                             response.body = responseContent;
                             response.headers["Content-Type"] = "text/html";

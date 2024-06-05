@@ -1,13 +1,15 @@
 #include "../include/Handler.hpp"
 #include "../include/Request.hpp"
+#include "../include/configParser.hpp"
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <iostream>
 
-std::string handleGetRequest(const std::string &uri)
+std::string handleGetRequest(ServerBlock &serverBlock, const std::string &uri)
 {
-	std::string filepath = "www/html" + uri;
+	// std::string filepath = "www/html" + uri; //ancien
+	std::string filepath = serverBlock.locations[0].root + uri; //remplace
 	std::cout << "uri>>" << filepath << std::endl;
 	if (filepath == "www/html/")
 	{
@@ -19,7 +21,17 @@ std::string handleGetRequest(const std::string &uri)
 	}
 	else
 	{
-		filepath = "www/html/404.html";
+		// filepath = "www/html/404.html"; // ancien
+		int error_code = 404; // ou n'importe quel autre code d'erreur approprié
+    	if (serverBlock.error_page.find(error_code) != serverBlock.error_page.end())
+		{
+			filepath = serverBlock.error_page[error_code];
+			// std::cout << "error: " << serverBlock.error_page[error_code] << std::endl; //test
+		}
+		else
+		{
+			filepath = "www/html/404.html"; // chemin par défaut si la page d'erreur n'est pas trouvée
+		}
 	}
 	std::ifstream file(filepath.c_str());
 	if (!file)
@@ -39,17 +51,33 @@ std::string handleGetRequest(const std::string &uri)
 	return response;
 }
 
-std::string handlePostRequest(const Request &request)
+std::string handlePostRequest(ServerBlock &serverBlock, const Request &request)
 {
-	std::string uploadDir = "upload";
+	// std::string uploadDir = "upload"; // ancien
+    std::string uploadDir = "";
+    // Parcourir les blocs de location pour trouver le répertoire de téléchargement
+    for (std::vector<LocationBlock>::const_iterator it = serverBlock.locations.begin(); it != serverBlock.locations.end(); ++it)
+    {
+        if (!it->upload_store.empty())
+        {
+            uploadDir = it->upload_store;
+			std::cout << "upload: " << it->upload_store << std::endl; //test
+            break;
+        }
+    }
+    // Vérifier si un répertoire de téléchargement a été trouvé
+    if (uploadDir.empty())
+    {
+        return "HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/html\r\nContent-Length: 45\r\n\r\n<html><body>No upload_store defined</body></html>";
+    }
+    // Utiliser uploadDir pour enregistrer le fichier téléchargé
     std::string responseContent = saveUploadedFile(request, uploadDir);
-	// std::cout << request.body << std::endl;
-	std::string response = "HTTP/1.1 200 OK\r\n";
-	response += "Content-Type: text/html\r\n";
-	response += "Content-Length: " + to_string(responseContent.length()) + "\r\n";
-	response += "\r\n" + responseContent;
-
-	return response;
+    // Construire la réponse HTTP
+    std::string response = "HTTP/1.1 200 OK\r\n";
+    response += "Content-Type: text/html\r\n";
+    response += "Content-Length: " + std::to_string(responseContent.length()) + "\r\n";
+    response += "\r\n" + responseContent;
+    return response;
 }
 
 std::string handleDeleteRequest(const std::string &uri)

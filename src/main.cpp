@@ -1,5 +1,6 @@
 #include "../include/Server.hpp"
 #include "../include/configParser.hpp"
+#include "../include/Handler.hpp"
 #include <stdlib.h>
 #include <signal.h>
 
@@ -30,14 +31,34 @@ void	handle_sigpipe(int sig)
 // 	return 0;
 // }
 
+// int main(int argc, char **argv) {
+//     (void)argc;
+//     (void)argv;
+
+//     ConfigParser parser("./config/main.conf");
+// 	std::vector<ServerBlock> serverBlocks = parser.parseConfig();
+// 	parser.mainParse();
+// 	// std::string configFile = (argc > 1) ? argv[1] : "conf/server.conf";
+// 	// Server server(configFile);
+// 	// server.start();
+// 	// std::cout << "kugsdjkfgaskjgfghfashfhjs" << serverBlocks[0] << std::endl;
+
+//     return 0;
+// }
+
 int main(int argc, char **argv) {
     (void)argc;
     (void)argv;
 
     ConfigParser parser("./config/main.conf");
-	std::vector<ServerBlock> serverBlocks = parser.parseConfig();
-	parser.mainParse();
-	std::cout << "kugsdjkfgaskjgfghfashfhjs" << serverBlocks[0] << std::endl;
+    parser.mainParse();  // Ensure this is called to parse the config
+    std::vector<ServerBlock> serverBlocks = parser.parseConfig();
+
+    for (std::vector<ServerBlock>::const_iterator it = serverBlocks.begin(); it != serverBlocks.end(); ++it) {
+        // std::cout << "ICI" << std::endl;
+		Server server(*it);
+        server.start();
+    }
 
     return 0;
 }
