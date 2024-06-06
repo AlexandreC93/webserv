@@ -16,4 +16,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Les nombres saisis ne sont pas valides.";
     }
 }
+
+echo "<!DOCTYPE html>
+
+<html lang=\"en\">\n
+    <head>\n
+    <meta charset=\"UTF-8\">\n
+    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n
+    <title>Basic Calculator</title>\n
+</head>\n
+<body>";
+echo "<h1>Result :</h1>";
+echo "<p>$a x $b = $result</p>";
+echo "</body>\n
+</html>\n";
 ?>
