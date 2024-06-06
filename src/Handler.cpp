@@ -9,13 +9,34 @@
 std::string handleGetRequest(ServerBlock &serverBlock, const std::string &uri)
 {
 	// std::string filepath = "www/html" + uri; //ancien
-	std::string filepath = serverBlock.locations[0].root + uri; //remplace
-	std::cout << "uri>>" << filepath << std::endl;
-	if (filepath == "www/html/")
+
+	std::string filepath;
+	bool locationFound = false;
+	// Parcourir tous les blocs de location pour trouver le chemin correspondant
+	for (std::vector<LocationBlock>::const_iterator it = serverBlock.locations.begin(); it != serverBlock.locations.end(); ++it)
+	{
+		std::cout << "Checking location: " << it->location_path << std::endl;
+		std::cout << "Root for this location: " << it->root << std::endl;
+		if (uri.find(it->location_path) == 0) // Vérifie si l'URI commence par le chemin de la location
+		{
+			filepath = it->root + uri.substr(it->location_path.length());
+			std::cout << "Matched location: " << it->location_path << ", filepath: " << filepath << std::endl;
+			locationFound = true;
+			break; // On a trouvé le chemin correspondant, pas besoin de continuer à chercher
+		}
+	}
+	// Si aucun chemin de location n'a été trouvé, utiliser la racine du serveur par défaut
+	if (!locationFound)
+	{
+		filepath = serverBlock.root + uri;
+		std::cout << "No location matched, using default root: " << serverBlock.root << ", filepath: " << filepath << std::endl;
+	}
+	// Ajouter des fichiers spécifiques selon les chemins d'URI
+	if (filepath == serverBlock.root + "/")
 	{
 		filepath += "index.html";
 	}
-	else if (filepath == "www/html/test")
+	else if (filepath == serverBlock.root + "/test")
 	{
 		filepath += ".html";
 	}
