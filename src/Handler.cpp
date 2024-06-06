@@ -9,13 +9,34 @@
 std::string handleGetRequest(ServerBlock &serverBlock, const std::string &uri)
 {
 	// std::string filepath = "www/html" + uri; //ancien
-	std::string filepath = serverBlock.locations[0].root + uri; //remplace
-	std::cout << "uri>>" << filepath << std::endl;
-	if (filepath == "www/html/")
+
+	std::string filepath;
+	bool locationFound = false;
+	// Parcourir tous les blocs de location pour trouver le chemin correspondant
+	for (std::vector<LocationBlock>::const_iterator it = serverBlock.locations.begin(); it != serverBlock.locations.end(); ++it)
+	{
+		std::cout << "Checking location: " << it->location_path << std::endl;
+		std::cout << "Root for this location: " << it->root << std::endl;
+		if (uri.find(it->location_path) == 0) // Vérifie si l'URI commence par le chemin de la location
+		{
+			filepath = it->root + uri.substr(it->location_path.length());
+			std::cout << "Matched location: " << it->location_path << ", filepath: " << filepath << std::endl;
+			locationFound = true;
+			break; // On a trouvé le chemin correspondant, pas besoin de continuer à chercher
+		}
+	}
+	// Si aucun chemin de location n'a été trouvé, utiliser la racine du serveur par défaut
+	if (!locationFound)
+	{
+		filepath = serverBlock.root + uri;
+		std::cout << "No location matched, using default root: " << serverBlock.root << ", filepath: " << filepath << std::endl;
+	}
+	// Ajouter des fichiers spécifiques selon les chemins d'URI
+	if (filepath == serverBlock.root + "/")
 	{
 		filepath += "index.html";
 	}
-	else if (filepath == "www/html/test")
+	else if (filepath == serverBlock.root + "/test")
 	{
 		filepath += ".html";
 	}
@@ -54,30 +75,30 @@ std::string handleGetRequest(ServerBlock &serverBlock, const std::string &uri)
 std::string handlePostRequest(ServerBlock &serverBlock, const Request &request)
 {
 	// std::string uploadDir = "upload"; // ancien
-    std::string uploadDir = "";
-    // Parcourir les blocs de location pour trouver le répertoire de téléchargement
-    for (std::vector<LocationBlock>::const_iterator it = serverBlock.locations.begin(); it != serverBlock.locations.end(); ++it)
-    {
-        if (!it->upload_store.empty())
-        {
-            uploadDir = it->upload_store;
-			std::cout << "upload: " << it->upload_store << std::endl; //test
-            break;
-        }
-    }
-    // Vérifier si un répertoire de téléchargement a été trouvé
-    if (uploadDir.empty())
-    {
-        return "HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/html\r\nContent-Length: 45\r\n\r\n<html><body>No upload_store defined</body></html>";
-    }
-    // Utiliser uploadDir pour enregistrer le fichier téléchargé
-    std::string responseContent = saveUploadedFile(request, uploadDir);
-    // Construire la réponse HTTP
-    std::string response = "HTTP/1.1 200 OK\r\n";
-    response += "Content-Type: text/html\r\n";
-    response += "Content-Length: " + std::to_string(responseContent.length()) + "\r\n";
-    response += "\r\n" + responseContent;
-    return response;
+	std::string uploadDir = "";
+	// Parcourir les blocs de location pour trouver le répertoire de téléchargement
+	for (std::vector<LocationBlock>::const_iterator it = serverBlock.locations.begin(); it != serverBlock.locations.end(); ++it)
+	{
+		if (!it->upload_store.empty())
+		{
+			uploadDir = it->upload_store;
+			std::cout << "upload: " << it->upload_store << std::endl; // test
+			break;
+		}
+	}
+	// Vérifier si un répertoire de téléchargement a été trouvé
+	if (uploadDir.empty())
+	{
+		return "HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/html\r\nContent-Length: 45\r\n\r\n<html><body>No upload_store defined</body></html>";
+	}
+	// Utiliser uploadDir pour enregistrer le fichier téléchargé
+	std::string responseContent = saveUploadedFile(request, uploadDir);
+	// Construire la réponse HTTP
+	std::string response = "HTTP/1.1 200 OK\r\n";
+	response += "Content-Type: text/html\r\n";
+	response += "Content-Length: " + std::to_string(responseContent.length()) + "\r\n";
+	response += "\r\n" + responseContent;
+	return response;
 }
 
 std::string handleDeleteRequest(const std::string &uri)
@@ -98,25 +119,30 @@ std::string handleDeleteRequest(const std::string &uri)
 	return response;
 }
 
-std::string saveUploadedFile(const Request& request, const std::string& uploadDir) {
-    std::ostringstream responseStream;
+std::string saveUploadedFile(const Request &request, const std::string &uploadDir)
+{
+	std::ostringstream responseStream;
 
-		// std::cout << "filename>" << std::endl;
+	// std::cout << "filename>" << std::endl;
 
-    for (std::map<std::string, std::string>::const_iterator it = request.formData.begin(); it != request.formData.end(); ++it) {
-        std::string filename = uploadDir + "/" + it->first;
+	for (std::map<std::string, std::string>::const_iterator it = request.formData.begin(); it != request.formData.end(); ++it)
+	{
+		std::string filename = uploadDir + "/" + it->first;
 		std::cout << "filename>" << filename << std::endl;
 		std::cout << "itfirst>" << it->first << std::endl;
-        std::ofstream outFile(filename.c_str(), std::ios::binary);
+		std::ofstream outFile(filename.c_str(), std::ios::binary);
 
-        if (!outFile) {
-            responseStream << "Failed to upload file: " << it->first << "\n";
-        } else {
-            outFile.write(it->second.c_str(), it->second.size());
-            outFile.close();
-            responseStream << "File uploaded successfully: " << it->first << "\n";
-        }
-    }
+		if (!outFile)
+		{
+			responseStream << "Failed to upload file: " << it->first << "\n";
+		}
+		else
+		{
+			outFile.write(it->second.c_str(), it->second.size());
+			outFile.close();
+			responseStream << "File uploaded successfully: " << it->first << "\n";
+		}
+	}
 
-    return responseStream.str();
+	return responseStream.str();
 }
