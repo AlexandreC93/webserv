@@ -23,7 +23,7 @@ std::string handleGetRequest(ServerBlock &serverBlock, const std::string &uri)
 	{
 		// filepath = "www/html/404.html"; // ancien
 		int error_code = 404; // ou n'importe quel autre code d'erreur approprié
-    	if (serverBlock.error_page.find(error_code) != serverBlock.error_page.end())
+		if (serverBlock.error_page.find(error_code) != serverBlock.error_page.end())
 		{
 			filepath = serverBlock.error_page[error_code];
 			// std::cout << "error: " << serverBlock.error_page[error_code] << std::endl; //test
