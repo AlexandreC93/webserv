@@ -22,6 +22,10 @@ ConfigParser::~ConfigParser() {
 	file.close();
 }
 
+std::vector<ServerBlock> ConfigParser::getServerBlocks() const {
+	return serverBlocks;
+}
+
 std::vector<ServerBlock> ConfigParser::parseConfig() {
 	std::string token;
 	while ((token = getNextToken()) != "") {

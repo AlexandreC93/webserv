@@ -48,7 +48,7 @@ public:
 	ConfigParser(const std::string& filename);
 	~ConfigParser();
 	void mainParse(void);
-	// std::vector<ServerBlock> getServerBlocks() const;
+	std::vector<ServerBlock> getServerBlocks() const;
 	std::vector<ServerBlock> parseConfig();
 
 private:

@@ -122,10 +122,10 @@ void Server::handleConnections()
                         request.parse(rawRequest);
 
                         Response response;
-
+						std::vector<ServerBlock> &serv = serverBlock;
                         if (request.method == "GET")
                         {
-                            std::string responseContent = handleGetRequest(this->serverBlock, request.uri);
+                            std::string responseContent = handleGetRequest(serverBlock, request.uri, this->serverBlock.listen);
                             response.status_code = 200;
                             response.body = responseContent;
                             response.headers["Content-Type"] = "text/html";
