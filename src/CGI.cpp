@@ -1,4 +1,4 @@
-#include "CGIExecutor.hpp"
+#include "../include/CGI.hpp"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -122,7 +122,7 @@ void CGIExecutor::execute() const
 // // Fonction pour exécuter un script CGI
 // void executeCGI(const std::string& scriptPath, const std::map<std::string, std::string>& env) {
 //     pid_t pid = fork();
-    
+
 //     if (pid < 0) {
 //         // Gestion de l'erreur de fork
 //         std::cerr << "Error: Fork failed" << std::endl;
@@ -159,7 +159,7 @@ void CGIExecutor::execute() const
 //         }
 
 //         close(cgiOutput[1]);
-        
+
 //         char buffer[1024];
 //         ssize_t bytesRead;
 //         while ((bytesRead = read(cgiOutput[0], buffer, sizeof(buffer))) > 0) {
