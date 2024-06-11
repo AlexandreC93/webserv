@@ -51,8 +51,8 @@ int main(int argc, char **argv) {
     (void)argv;
 
     ConfigParser parser("./config/main.conf");
-    parser.mainParse();  // Ensure this is called to parse the config
     std::vector<ServerBlock> serverBlocks = parser.parseConfig();
+    parser.mainParse();  // Ensure this is called to parse the config
 
     for (std::vector<ServerBlock>::const_iterator it = serverBlocks.begin(); it != serverBlocks.end(); ++it) {
         // std::cout << "ICI" << std::endl;
