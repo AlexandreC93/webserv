@@ -16,18 +16,6 @@
 
 Server::Server(const ServerBlock& config) : serverBlock(config) {}
 
-// Server::Server(const std::string &configFile)
-// {
-// 	(void)configFile;
-//     // loadConfig(configFile);
-//     // appelle le parsing du .conf
-// }
-
-// void Server::loadConfig(std::string &configFile)
-// {
-//     configParser(configFile);
-// }
-
 void Server::start()
 {
 	// ServerBlock serverBlock;
