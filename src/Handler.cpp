@@ -39,7 +39,7 @@ std::string handleGetRequest(ServerBlock &serverBlock, const std::string &uri)
 	}
 	else if (filepath == "www/html" + uri)
 	{
-		std::cout << "OK" << std::endl;
+		// std::cout << "OK" << std::endl;
 		filepath += ".html";
 	}
 	else
