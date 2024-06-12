@@ -1,0 +1,30 @@
+<!-- multiplication.php -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Multiplication de nombres en PHP</title>
+</head>
+
+<body>
+	<h2>Calcul de multiplication en PHP</h2>
+	<form method="POST">
+		<label for="number1">Nombre 1:</label>
+		<input type="number" name="number1" id="number1" required>
+		<label for="number2">Nombre 2:</label>
+		<input type="number" name="number2" id="number2" required>
+		<button type="submit">Multiplier</button>
+	</form>
+	<?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $number1 = $_POST["number1"];
+        $number2 = $_POST["number2"];
+        $result = $number1 * $number2;
+        echo "<p>Résultat de la multiplication : $result</p>";
+    }
+    ?>
+</body>
+
+</html>
