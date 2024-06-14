@@ -8,18 +8,20 @@
 
 std::string handleGetRequest(ServerBlock &serverBlock, const std::string &uri)
 {
-	// std::string filepath = "www/html" + uri; //ancien
+	std::string filepath = "www/html" + uri; // ancien
 
-	std::string filepath;
 	bool locationFound = false;
 	// Parcourir tous les blocs de location pour trouver le chemin correspondant
+	std::cout << "URI: " << uri << std::endl;
 	for (std::vector<LocationBlock>::const_iterator it = serverBlock.locations.begin(); it != serverBlock.locations.end(); ++it)
 	{
 		std::cout << "Checking location: " << it->location_path << std::endl;
 		std::cout << "Root for this location: " << it->root << std::endl;
-		if (uri.find(it->location_path) == 0) // Vérifie si l'URI commence par le chemin de la location
+		// if (uri.find(it->location_path) == 0) // Vérifie si l'URI commence par le chemin de la location
+		if (it->location_path.find(uri) == 0)
 		{
-			filepath = it->root + uri.substr(it->location_path.length());
+			// filepath = it->root + uri.substr(it->location_path.length());
+			std::cout << "Filepath: " << filepath << std::endl;
 			std::cout << "Matched location: " << it->location_path << ", filepath: " << filepath << std::endl;
 			locationFound = true;
 			break; // On a trouvé le chemin correspondant, pas besoin de continuer à chercher
@@ -28,16 +30,16 @@ std::string handleGetRequest(ServerBlock &serverBlock, const std::string &uri)
 	// Si aucun chemin de location n'a été trouvé, utiliser la racine du serveur par défaut
 	if (!locationFound)
 	{
-		filepath = serverBlock.root + uri;
+		// filepath = serverBlock.root + uri;
 		std::cout << "No location matched, using default root: " << serverBlock.root << ", filepath: " << filepath << std::endl;
 	}
-	// Ajouter des fichiers spécifiques selon les chemins d'URI
-	if (filepath == serverBlock.root + "/")
+	if (filepath == "www/html/")
 	{
 		filepath += "index.html";
 	}
-	else if (filepath == serverBlock.root + "/test")
+	else if (filepath == "www/html" + uri)
 	{
+		// std::cout << "OK" << std::endl;
 		filepath += ".html";
 	}
 	else
@@ -189,8 +191,8 @@ std::string saveUploadedFile(const Request &request, const std::string &uploadDi
 {
 	std::ostringstream responseStream;
 
-	// std::cout << "filename>" << std::endl;
-
+	std::cout << "filename>" << std::endl;
+	// std::cout << "reqform: " << request.formData << std::endl;
 	for (std::map<std::string, std::string>::const_iterator it = request.formData.begin(); it != request.formData.end(); ++it)
 	{
 		std::string filename = uploadDir + "/" + it->first;

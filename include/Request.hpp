@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 
-class Request {
+class Request { // pas encore change
 public:
     std::string method;
     std::string uri;

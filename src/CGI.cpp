@@ -1,4 +1,4 @@
-#include "CGIExecutor.hpp"
+#include "../include/CGIExecutor.hpp"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>

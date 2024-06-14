@@ -2,12 +2,12 @@
 #include "../include/configParser.hpp"
 
 LocationBlock::LocationBlock() {}
-LocationBlock::~LocationBlock() {}
+LocationBlock::~LocationBlock() {} //mettre la class location dans le fichier location.hpp
 
 ServerBlock::ServerBlock() {}
-ServerBlock::~ServerBlock() {}
+ServerBlock::~ServerBlock() {} // mettre la class location dans le fichier serverBlock.hpp
 
-ConfigParser::ConfigParser(const std::string& filename) : filename(filename) {
+ConfigParser::ConfigParser(const std::string& filename) : filename(filename) { //parser le fichier dans parseconfig pour trouver si y'a des erreurs global et ensuite recuperer les different elements dans les class correspondante 
 	file.open(filename);
 	std::cout << filename << std::endl;
 	if (!file.is_open()) {
@@ -22,11 +22,7 @@ ConfigParser::~ConfigParser() {
 	file.close();
 }
 
-std::vector<ServerBlock> ConfigParser::getServerBlocks() const {
-	return serverBlocks;
-}
-
-std::vector<ServerBlock> ConfigParser::parseConfig() {
+std::vector<ServerBlock> ConfigParser::parseConfig() { //split les server dans server block avant de parser chaque server
 	std::string token;
 	while ((token = getNextToken()) != "") {
 		if (token == "server") {
@@ -158,5 +154,4 @@ void ConfigParser::mainParse(void) {
 		}
 		std::cout << std::endl;
 	}
-	// std::cout << "L:IFHSKFDHKLS " << std::endl;
 }

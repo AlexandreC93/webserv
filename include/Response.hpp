@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 
-class Response {
+class Response { // pas encore change
 public:
     int status_code;
     std::map<std::string, std::string> headers;
