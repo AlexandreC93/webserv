@@ -49,16 +49,24 @@ void	handle_sigpipe(int sig)
 int main(int argc, char **argv) {
     (void)argc;
     (void)argv;
+	// if (argc > 0) {
+	// 	if (!argv == NULL) {
+	// } check .conf / handle sig
+	// body folder
+	// gerer les '#' ds le conf (comments)
+	// read le .conf et split par server block (gerer dans confParse qui stock chaque serv ds le vecteur Server de Laucher)
+	// 
 
-    ConfigParser parser("./config/main.conf");
-    std::vector<ServerBlock> serverBlocks = parser.parseConfig();
-    parser.mainParse();  // Ensure this is called to parse the config
 
-    for (std::vector<ServerBlock>::const_iterator it = serverBlocks.begin(); it != serverBlocks.end(); ++it) {
-        // std::cout << "ICI" << std::endl;
-		Server server(*it);
-        server.start();
-    }
+    // ConfigParser parser("./config/main.conf");
+    // std::vector<ServerBlock> serverBlocks = parser.parseConfig();
+    // parser.mainParse();  // Ensure this is called to parse the config
+
+    // for (std::vector<ServerBlock>::const_iterator it = serverBlocks.begin(); it != serverBlocks.end(); ++it) {
+    //     // std::cout << "ICI" << std::endl;
+	// 	Server server(*it);
+    //     server.start();
+    // }
 
     return 0;
 }

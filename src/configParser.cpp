@@ -61,7 +61,7 @@ void ConfigParser::parseLocationBlock(ServerBlock& serverBlock) {
 	serverBlock.locations.push_back(locationBlock);
 }
 
-void ConfigParser::parseServerBlock()
+void ConfigParser::parseServerBlock() // changer ou l'on stock la data ds l'objet serv
 {
 	ServerBlock serverBlock;
 	std::string token;
