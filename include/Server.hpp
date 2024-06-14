@@ -4,36 +4,28 @@
 #include <string>
 #include <map>
 #include <netinet/in.h>
-#include "LocationConfig.hpp"
+#include "Location.hpp"
 #include "configParser.hpp"
 
-class Server {
+class Server // On instancie la class Server for each server blocks
+{
 public:
-    Server(const ServerBlock& serverBlock);
-    void start();
+	// Server(const ServerBlock &serverBlock);
+	// void start();
 
 private:
-    int server_fd;
-    struct sockaddr_in address;
-    ServerBlock serverBlock;  // Store the ServerBlock configuration
-
-    void handleConnections();
+	in_port_t _port;
+	in_addr_t _host;
+	struct sockaddr_in _servaddr;
+	std::string _serverName;
+	std::string _root;
+	unsigned int _clientMaxBodySize;
+	std::string _index;
+	std::map<int, std::string> _errorPages;
+	std::vector<Location> _locations;
+	int _listenSocket;
+	static bool _verbose;
+	int _timeout;
 };
-
-// class Server {
-// public:
-//     Server(const std::string& configFile);
-//     void start();
-
-// private:
-//     int server_fd;
-//     struct sockaddr_in address;
-//     std::map<std::string, LocationConfig> locations;
-//     std::map<int, std::string> error_pages;
-
-//     // void loadConfig(const std::string& configFile);
-//     void handleConnections();
-//     // void handleRequest(int client_socket);
-// };
 
 #endif
