@@ -1,25 +1,36 @@
 
 #include "../include/configParser.hpp"
 
-LocationBlock::LocationBlock() {}
-LocationBlock::~LocationBlock() {} //mettre la class location dans le fichier location.hpp
+// LocationBlock::LocationBlock() {}
+// LocationBlock::~LocationBlock() {} //mettre la class location dans le fichier location.hpp
 
-ServerBlock::ServerBlock() {}
-ServerBlock::~ServerBlock() {} // mettre la class location dans le fichier serverBlock.hpp
+// ServerBlock::ServerBlock() {}
+// ServerBlock::~ServerBlock() {} // mettre la class location dans le fichier serverBlock.hpp
 
-ConfigParser::ConfigParser(const std::string& filename) : filename(filename) { //parser le fichier dans parseconfig pour trouver si y'a des erreurs global et ensuite recuperer les different elements dans les class correspondante 
-	file.open(filename);
-	std::cout << filename << std::endl;
-	if (!file.is_open()) {
-		std::cerr << "Erreur lors de l'ouverture du fichier: " << filename << std::endl;
-		exit(EXIT_FAILURE); // Sortie du programme avec erreur
-	}
-	ServerBlock server;
-	server.path = filename;
+// ConfigParser::ConfigParser(const std::string& filename) : filename(filename) { //parser le fichier dans parseconfig pour trouver si y'a des erreurs global et ensuite recuperer les different elements dans les class correspondante 
+// 	file.open(filename);
+// 	std::cout << filename << std::endl;
+// 	if (!file.is_open()) {
+// 		std::cerr << "Erreur lors de l'ouverture du fichier: " << filename << std::endl;
+// 		exit(EXIT_FAILURE); // Sortie du programme avec erreur
+// 	}
+// 	ServerBlock server;
+// 	server.path = filename;
+// }
+
+ConfigParser::ConfigParser(std::string path) : _path(path)
+{
+	_serverNb = 0;
+}
+
+ConfigParser::ConfigParser(ConfigParser const &src)
+{
+	if (this != &src)
+		*this = src;
 }
 
 ConfigParser::~ConfigParser() {
-	file.close();
+	getPath();
 }
 
 std::vector<ServerBlock> ConfigParser::parseConfig() { //split les server dans server block avant de parser chaque server
