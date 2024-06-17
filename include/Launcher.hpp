@@ -24,6 +24,9 @@ public:
 	Launcher(std::string path);
 	Launcher(Launcher const &copy);
 	~Launcher(void);
+
+	Launcher &operator=(Launcher const &launcher);
+
 	void Launcher::parse(void);// confParser.parse
 	void Launcher::lauchServers(void);
 };

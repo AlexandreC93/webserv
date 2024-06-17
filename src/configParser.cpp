@@ -7,7 +7,7 @@
 // ServerBlock::ServerBlock() {}
 // ServerBlock::~ServerBlock() {} // mettre la class location dans le fichier serverBlock.hpp
 
-// ConfigParser::ConfigParser(const std::string& filename) : filename(filename) { //parser le fichier dans parseconfig pour trouver si y'a des erreurs global et ensuite recuperer les different elements dans les class correspondante 
+// ConfigParser::ConfigParser(const std::string& filename) : filename(filename) { //parser le fichier dans parseconfig pour trouver si y'a des erreurs global et ensuite recuperer les different elements dans les class correspondante
 // 	file.open(filename);
 // 	std::cout << filename << std::endl;
 // 	if (!file.is_open()) {
@@ -33,100 +33,136 @@ ConfigParser::~ConfigParser() {
 	getPath();
 }
 
-std::vector<ServerBlock> ConfigParser::parseConfig() { //split les server dans server block avant de parser chaque server
-	std::string token;
-	while ((token = getNextToken()) != "") {
-		if (token == "server") {
-			parseServerBlock();
-		}
-	}
-	return serverBlocks;
-}
-
-void ConfigParser::parseLocationBlock(ServerBlock& serverBlock) {
-	LocationBlock locationBlock;
-	std::string token;
-	std::getline(file >> std::ws, locationBlock.location_path, '{'); // Récupère le chemin spécifique
-	while ((token = getNextToken()) != "}") {
-		if (token == "root") {
-			std::getline(file >> std::ws, locationBlock.root, ';');
-		} else if (token == "index") {
-			std::getline(file >> std::ws, locationBlock.index, ';');
-		} else if (token == "allow_methods" || token == "methods") {
-			std::getline(file >> std::ws, locationBlock.allow_methods, ';');
-		} else if (token == "autoindex") {
-			std::getline(file >> std::ws, locationBlock.autoindex, ';');
-		}else if (token == "upload_store"){
-			std::getline(file >> std::ws, locationBlock.upload_store, ';');
-		} else if (token == "cgi_path") {
-			std::getline(file >> std::ws, locationBlock.cgi_path, ';');
-		} else if (token == "cgi_ext") {
-			std::getline(file >> std::ws, locationBlock.cgi_ext, ';');
-		} else if (token == "cgi"){
-			std::getline(file >> std::ws, locationBlock.cgi, ';');
-		} else if (token == "return")
-		{
-			std::getline(file >> std::ws, locationBlock.ret, ';');
-		}
-	}
-	serverBlock.locations.push_back(locationBlock);
-}
-
-void ConfigParser::parseServerBlock()
+ConfigParser &ConfigParser::operator=(ConfigParser const &rhs)
 {
-	ServerBlock serverBlock;
-	std::string token;
-	while ((token = getNextToken()) != "}") {
-		if (token == "listen") {
-			file >> serverBlock.listen;
-		} else if (token == "server_name") {
-			std::getline(file >> std::ws, serverBlock.server_name, ';');
-		} else if (token == "host") {
-			std::getline(file >> std::ws, serverBlock.host, ';');
-		} else if (token == "root") {
-			std::getline(file >> std::ws, serverBlock.root, ';');
-		} else if (token == "index") {
-			std::getline(file >> std::ws, serverBlock.index, ';');
-		} else if (token == "client_max_body_size") {
-			std::getline(file >> std::ws, serverBlock.client_max_body_size, ';');
-		} else if (token == "default_server") {
-			std::getline(file >> std::ws, serverBlock.default_server, ';');
-		} else if (token == "error_page") {
-			std::string error_info;
-			std::getline(file >> std::ws, error_info, ';');
-
-			std::istringstream error_stream(error_info);
-			int error_code;
-			std::string error_path;
-			error_stream >> error_code;
-			error_stream >> error_path;
-			serverBlock.error_page[error_code] = error_path;
-		} else if (token == "location") {
-			parseLocationBlock(serverBlock);
-		}
+	if (this != &rhs)
+	{
+		_path = rhs.getPath();
+		_servers = rhs.getServers();
+		_serverConf = rhs.getServerConf();
+		_serverNb = rhs.getServerNb();
 	}
-	serverBlock.path = filename; // Ajout de l'initialisation de la variable path
-	serverBlocks.push_back(serverBlock);
+	return (*this);
 }
 
-std::string ConfigParser::getNextToken() {
-	std::string token;
-	while (file >> token) {
-		// Vérifier si le jeton commence par '{' ou ';'
-		if (token[0] == '{' || token[0] == ';') {
-			// Ignorer le caractère et continuer
-			file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			continue;
-		}
-		// Vérifier si le jeton se termine par ';'
-		if (token[token.size() - 1] == ';') {
-			// Retirer le dernier caractère ';'
-			token = token.substr(0, token.size() - 1);
-		}
-		return token;
-	}
-	return "";
+std::string ConfigParser::getPath() const{
+	return _path;
 }
+
+std::vector<Server> ConfigParser::getServers() const{
+	return _servers;
+}
+
+std::vector<std::string> ConfigParser::getServerConf() const{
+	return _serverConf;
+}
+
+int ConfigParser::getServerNb() const{
+	return _serverNb;
+}
+
+void ConfigParser::parse(void){
+
+}
+
+void ConfigParser::splitServerBlocks(std::string &content){
+
+}
+
+// std::vector<ServerBlock> ConfigParser::parseConfig() { //split les server dans server block avant de parser chaque server
+// 	std::string token;
+// 	while ((token = getNextToken()) != "") {
+// 		if (token == "server") {
+// 			parseServerBlock();
+// 		}
+// 	}
+// 	return serverBlocks;
+// }
+
+// void ConfigParser::parseLocationBlock(ServerBlock& serverBlock) {
+// 	LocationBlock locationBlock;
+// 	std::string token;
+// 	std::getline(file >> std::ws, locationBlock.location_path, '{'); // Récupère le chemin spécifique
+// 	while ((token = getNextToken()) != "}") {
+// 		if (token == "root") {
+// 			std::getline(file >> std::ws, locationBlock.root, ';');
+// 		} else if (token == "index") {
+// 			std::getline(file >> std::ws, locationBlock.index, ';');
+// 		} else if (token == "allow_methods" || token == "methods") {
+// 			std::getline(file >> std::ws, locationBlock.allow_methods, ';');
+// 		} else if (token == "autoindex") {
+// 			std::getline(file >> std::ws, locationBlock.autoindex, ';');
+// 		}else if (token == "upload_store"){
+// 			std::getline(file >> std::ws, locationBlock.upload_store, ';');
+// 		} else if (token == "cgi_path") {
+// 			std::getline(file >> std::ws, locationBlock.cgi_path, ';');
+// 		} else if (token == "cgi_ext") {
+// 			std::getline(file >> std::ws, locationBlock.cgi_ext, ';');
+// 		} else if (token == "cgi"){
+// 			std::getline(file >> std::ws, locationBlock.cgi, ';');
+// 		} else if (token == "return")
+// 		{
+// 			std::getline(file >> std::ws, locationBlock.ret, ';');
+// 		}
+// 	}
+// 	serverBlock.locations.push_back(locationBlock);
+// }
+
+// void ConfigParser::parseServerBlock()
+// {
+// 	ServerBlock serverBlock;
+// 	std::string token;
+// 	while ((token = getNextToken()) != "}") {
+// 		if (token == "listen") {
+// 			file >> serverBlock.listen;
+// 		} else if (token == "server_name") {
+// 			std::getline(file >> std::ws, serverBlock.server_name, ';');
+// 		} else if (token == "host") {
+// 			std::getline(file >> std::ws, serverBlock.host, ';');
+// 		} else if (token == "root") {
+// 			std::getline(file >> std::ws, serverBlock.root, ';');
+// 		} else if (token == "index") {
+// 			std::getline(file >> std::ws, serverBlock.index, ';');
+// 		} else if (token == "client_max_body_size") {
+// 			std::getline(file >> std::ws, serverBlock.client_max_body_size, ';');
+// 		} else if (token == "default_server") {
+// 			std::getline(file >> std::ws, serverBlock.default_server, ';');
+// 		} else if (token == "error_page") {
+// 			std::string error_info;
+// 			std::getline(file >> std::ws, error_info, ';');
+
+// 			std::istringstream error_stream(error_info);
+// 			int error_code;
+// 			std::string error_path;
+// 			error_stream >> error_code;
+// 			error_stream >> error_path;
+// 			serverBlock.error_page[error_code] = error_path;
+// 		} else if (token == "location") {
+// 			parseLocationBlock(serverBlock);
+// 		}
+// 	}
+// 	serverBlock.path = filename; // Ajout de l'initialisation de la variable path
+// 	serverBlocks.push_back(serverBlock);
+// }
+
+// std::string ConfigParser::getNextToken() {
+// 	std::string token;
+// 	while (file >> token) {
+// 		// Vérifier si le jeton commence par '{' ou ';'
+// 		if (token[0] == '{' || token[0] == ';') {
+// 			// Ignorer le caractère et continuer
+// 			file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+// 			continue;
+// 		}
+// 		// Vérifier si le jeton se termine par ';'
+// 		if (token[token.size() - 1] == ';') {
+// 			// Retirer le dernier caractère ';'
+// 			token = token.substr(0, token.size() - 1);
+// 		}
+// 		return token;
+// 	}
+// 	return "";
+// }
 
 // std::vector<ServerBlock> ConfigParser::getServerBlocks() const
 // {
