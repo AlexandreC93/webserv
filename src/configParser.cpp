@@ -65,8 +65,100 @@ void ConfigParser::parse(void){
 
 }
 
-void ConfigParser::splitServerBlocks(std::string &content){
+std::string ConfigParser::cleanConf(std::istringstream &file) const
+{
+	std::string token;
+	while (file >> token)
+	{
+		//Verifier si le jeton commence par '#' (debut commentaire)
+		if (token[0] == '#')
+		{
+			file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			continue;
+		}
+		//Verifier si le jeton commence par '{' ou ';'
+		if (token[0] == '{' || token[0] == ';')
+		{
+			//Ignorer le caractere et continuer
+			file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			continue;
+		}
+		//Verifier si le jeton se termine par ';'
+		if (token[token.size() - 1] == ';')
+		{
+			//Retirer le dernier caractere ';'
+			token = token.substr(0, token.size() - 1);
+		}
+		return token;
+	}
+	//Si aucun jeton valide n'est trouve, retourner une chaine vide
+	return "";
+}
 
+std::pair<size_t, size_t> ConfigParser::findServerBlocks(size_t blockStart, const std::string &content) const
+{
+	size_t i = blockStart;
+	int subContext = 0;
+	// Trouver le début du bloc de configuration
+	while (content[i] != '\0')
+	{
+		if (std::isspace(content[i]))
+		{
+			i++;
+			continue;
+		}
+		else if (content[i] == 's' && content.compare(i, 6, "server") == 0)
+		{
+			i += 6;
+			while (content[i] != '\0' && std::isspace(content[i]))
+				i++;
+			if (content[i] == '{')
+				break;
+			else
+				throw ConfParserException("Expected '{' symbol after server directive");
+		}
+		else
+			throw ConfParserException("Unknown directive or unexpected symbol in main context");
+	}
+	size_t blockStartIndex = i;
+	// Trouver la fin du bloc de configuration
+	for (i = blockStartIndex + 1; content[i] != '\0'; i++)
+	{
+		if (content[i] == '{')
+			subContext++;
+		else if (content[i] == '}' && subContext > 0)
+			subContext--;
+		else if (content[i] == '}' && subContext == 0)
+			return std::make_pair(blockStartIndex, i);
+	}
+	//renvoi un std::pair contenant les indices de debut et de fin d'un bloc de serveur.
+	return std::make_pair(blockStartIndex, blockStartIndex); // En cas d'erreur, retourner le début
+}
+
+void ConfigParser::splitServerBlocks(std::string &content)
+{
+	size_t blockStart = 0;
+	size_t blockEnd = 1;
+	if (content.find("server") == std::string::npos)
+		throw ConfParserException("No server block found in configuration file");
+	while (blockStart != blockEnd && blockStart < content.length())
+	{
+		std::pair<size_t, size_t> blockIdx = findServerBlocks(blockStart, content);
+		blockStart = blockIdx.first;
+		blockEnd = blockIdx.second;
+		if (blockStart == blockEnd)
+		{
+			for (size_t i = blockStart; content[i] != '\0'; i++)
+			{
+				if (!std::isspace(content[i]))  // en cas de whitespaces en fin de fichier
+					throw ConfParserException("Something seems wrong with curved brackets scopes");
+			}
+			break;
+		}
+		_serverConf.push_back(content.substr(blockStart, blockEnd - blockStart + 1));
+		_serverNb++;
+		blockStart = blockEnd + 1;
+	}
 }
 
 // std::vector<ServerBlock> ConfigParser::parseConfig() { //split les server dans server block avant de parser chaque server

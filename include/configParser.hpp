@@ -32,6 +32,8 @@ public:
 	int getServerNb() const;
 
 	void parse(void);
+	std::string cleanConf(std::istringstream &file) const;
+	std::pair<size_t, size_t> findServerBlocks(size_t blockStart, const std::string &content) const;
 	void splitServerBlocks(std::string &content);
 	//configure servers
 	class ConfParserException : public std::exception

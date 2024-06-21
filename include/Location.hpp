@@ -4,11 +4,14 @@
 #include <string>
 #include <vector>
 
-//chaque server a son propre vecteur de location qui lui correspond 
+//chaque server a son propre vecteur de location qui lui correspond
 
-class Location // chaque bloc location est contenu dans un vecteur dans server 
+class Location // chaque bloc location est contenu dans un vecteur dans server
 {
 public:
+	Location();
+	Location(Location const &src);
+	~Location();
 	// void parseLocationConfig(const std::string &configBlock);
 
 private:
