@@ -2,7 +2,7 @@
 #include "../include/configParser.hpp"
 
 ConfigParser::ConfigParser(const std::string path) : _path(path) {
-	std::cout << path << std::endl;
+	std::cout << "PATH:" << path << std::endl;
 	_path = path;
 }
 
@@ -165,9 +165,15 @@ void ConfigParser::mainParse(void)
         std::cout << "Locations:" << std::endl;
         for (const auto& location : serverBlock.getLocations()) {
             std::cout << "\tLocation: " << location.getLocationPath() << std::endl;
-            std::cout << "\t\tRoot: " << location.getRoot() << std::endl;
-            std::cout << "\t\tIndex: " << location.getIndex() << std::endl;
-            // Afficher d'autres informations pertinentes pour LocationBlock
+			std::cout << "\t\tRoot: " << location.getRoot() << std::endl;
+			std::cout << "\t\tIndex: " << location.getIndex() << std::endl;
+			std::cout << "\t\tAllow Methods: " << location.getAllowMethods() << std::endl;
+			std::cout << "\t\tAutoindex: " << location.getAutoIndex() << std::endl;
+			std::cout << "\t\tUpload_store: " << location.getUploadStore() << std::endl;
+			std::cout << "\t\tCGI Path: " << location.getCgiPath() << std::endl;
+			std::cout << "\t\tCGI Ext: " << location.getCgiExt() << std::endl;
+			std::cout << "\t\tCGI: " << location.getCgi() << std::endl;
+			std::cout << "\t\tReturn: " << location.getRet() << std::endl;
         }
         std::cout << std::endl;
     }
