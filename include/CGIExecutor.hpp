@@ -6,7 +6,7 @@
 #include <map>
 #include <vector>
 
-class CGIExecutor  // pas encore change
+class CGIExecutor
 {
 public:
 	CGIExecutor(const std::string &scriptPath, const std::map<std::string, std::string> &env);

@@ -6,7 +6,7 @@
 #include "Response.hpp"
 #include "configParser.hpp"
 
-class CGIHandler  // pas encore change
+class CGIHandler
 {
 public:
 	CGIHandler(const std::string &cgi_path, const std::string &cgi_script);
