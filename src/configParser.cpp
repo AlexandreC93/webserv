@@ -68,36 +68,36 @@ std::string ConfigParser::extractContent(std::string const &path)
 
 
 
-// std::string ConfigParser::cleanFile(std::string &content) const
-// {
-//     // Suppression des commentaires
-//     size_t sharp = content.find('#');
-//     while (sharp != std::string::npos) {
-//         size_t nl = content.find('\n', sharp);
-//         content.erase(sharp, nl - sharp);
-//         sharp = content.find('#');
-//     }
+std::string ConfigParser::cleanFile(std::string &content) const
+{
+    // Suppression des commentaires
+    size_t sharp = content.find('#');
+    while (sharp != std::string::npos) {
+        size_t nl = content.find('\n', sharp);
+        content.erase(sharp, nl - sharp);
+        sharp = content.find('#');
+    }
     
-//     std::ostringstream cleanedContent;
-//     std::istringstream file(content);
-//     std::string token;
+    std::ostringstream cleanedContent;
+    std::istringstream file(content);
+    std::string token;
 
-//     // Lecture des tokens et reconstruction du contenu nettoyé
-//     while (file >> token) {
-//         // Vérifier si le token commence par '{' ou ';'
-//         if (token[0] == '{' || token[0] == ';') {
-//             cleanedContent << ' ' << token[0] << ' ';
-//             token = token.substr(1); // Ignorer le caractère '{' ou ';'
-//         }
-//         // Vérifier si le token se termine par ';'
-//         if (!token.empty() && token[token.size() - 1] == ';') {
-//             token = token.substr(0, token.size() - 1); // Retirer le ';'
-//         }
-//         cleanedContent << token << ' ';
-//     }
+    // Lecture des tokens et reconstruction du contenu nettoyé
+    while (file >> token) {
+        // Vérifier si le token commence par '{' ou ';'
+        if (token[0] == '{' || token[0] == ';') {
+            cleanedContent << ' ' << token[0] << ' ';
+            token = token.substr(1); // Ignorer le caractère '{' ou ';'
+        }
+        // Vérifier si le token se termine par ';'
+        if (!token.empty() && token[token.size() - 1] == ';') {
+            token = token.substr(0, token.size() - 1); // Retirer le ';'
+        }
+        cleanedContent << token << ' ';
+    }
     
-//     return cleanedContent.str();
-// }
+    return cleanedContent.str();
+}
 
 
 
