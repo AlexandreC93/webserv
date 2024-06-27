@@ -145,37 +145,38 @@ std::vector<ServerBlock> ConfigParser::parseConfig() {
 // 	return "";
 // }
 
-void ConfigParser::mainParse(void)
-{
-    // Affichage des informations récupérées
-    for (const auto& serverBlock : _servers) {
-        std::cout << "Path: " << serverBlock.getPath() << std::endl;
-        std::cout << "Listen: " << serverBlock.getListen() << std::endl;
-        std::cout << "Server Name: " << serverBlock.getServerName() << std::endl;
-        std::cout << "Host: " << serverBlock.getHost() << std::endl;
-        std::cout << "Root: " << serverBlock.getRoot() << std::endl;
-        std::cout << "Index: " << serverBlock.getIndex() << std::endl;
-        std::cout << "Error Pages:" << std::endl;
-        for (const auto& error : serverBlock.getErrorPage()) {
-            std::cout << "\t" << error.first << ": " << error.second << std::endl;
-        }
-        std::cout << "Client size: " << serverBlock.getClientMaxBodySize() << std::endl;
-        std::cout << "Default server: " << serverBlock.getDefaultServer() << std::endl;
+void ConfigParser::mainParse() {
+    for (std::vector<ServerBlock>::const_iterator it = _servers.begin(); it != _servers.end(); ++it) {
+        const ServerBlock &serverBlock = *it;
+        std::cout << "Chemin : " << serverBlock.getPath() << std::endl;
+        std::cout << "Écoute : " << serverBlock.getListen() << std::endl;
+        std::cout << "Nom du serveur : " << serverBlock.getServerName() << std::endl;
+        std::cout << "Hôte : " << serverBlock.getHost() << std::endl;
+        std::cout << "Racine : " << serverBlock.getRoot() << std::endl;
+        std::cout << "Index : " << serverBlock.getIndex() << std::endl;
 
-        std::cout << "Locations:" << std::endl;
-        for (const auto& location : serverBlock.getLocations()) {
-            std::cout << "\tLocation: " << location.getLocationPath() << std::endl;
-			std::cout << "\t\tRoot: " << location.getRoot() << std::endl;
-			std::cout << "\t\tIndex: " << location.getIndex() << std::endl;
-			std::cout << "\t\tAllow Methods: " << location.getAllowMethods() << std::endl;
-			std::cout << "\t\tAutoindex: " << location.getAutoIndex() << std::endl;
-			std::cout << "\t\tUpload_store: " << location.getUploadStore() << std::endl;
-			std::cout << "\t\tCGI Path: " << location.getCgiPath() << std::endl;
-			std::cout << "\t\tCGI Ext: " << location.getCgiExt() << std::endl;
-			std::cout << "\t\tCGI: " << location.getCgi() << std::endl;
-			std::cout << "\t\tReturn: " << location.getRet() << std::endl;
+        const std::map<int, std::string> &pagesErreurs = serverBlock.getErrorPage();
+        for (std::map<int, std::string>::const_iterator errIt = pagesErreurs.begin(); errIt != pagesErreurs.end(); ++errIt) {
+            std::cout << "\t" << errIt->first << ": " << errIt->second << std::endl;
         }
-        std::cout << std::endl;
+
+        std::cout << "Taille maximale du corps client : " << serverBlock.getClientMaxBodySize() << std::endl;
+        std::cout << "Serveur par défaut : " << serverBlock.getDefaultServer() << std::endl;
+
+        const std::vector<LocationBlock> &emplacements = serverBlock.getLocations();
+        for (std::vector<LocationBlock>::const_iterator locIt = emplacements.begin(); locIt != emplacements.end(); ++locIt) {
+            const LocationBlock &location = *locIt;
+            std::cout << "\tEmplacement : " << location.getLocationPath() << std::endl;
+            std::cout << "\t\tRacine : " << location.getRoot() << std::endl;
+            std::cout << "\t\tIndex : " << location.getIndex() << std::endl;
+            std::cout << "\t\tMéthodes autorisées : " << location.getAllowMethods() << std::endl;
+            std::cout << "\t\tAutoindex : " << location.getAutoIndex() << std::endl;
+            std::cout << "\t\tStockage d'upload : " << location.getUploadStore() << std::endl;
+            std::cout << "\t\tChemin CGI : " << location.getCgiPath() << std::endl;
+            std::cout << "\t\tExtension CGI : " << location.getCgiExt() << std::endl;
+            std::cout << "\t\tCGI : " << location.getCgi() << std::endl;
+            std::cout << "\t\tRetour : " << location.getRet() << std::endl;
+        }
     }
 }
 

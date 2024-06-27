@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Location.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elie <elie@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: lenibart <lenibart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/23 18:39:29 by elie              #+#    #+#             */
-/*   Updated: 2024/06/27 10:37:42 by elie             ###   ########.fr       */
+/*   Updated: 2024/06/27 19:35:16 by lenibart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LOCATION_HPP
-# define LOCATION_HPP
+#ifndef LOCATIONBLOCK_HPP
+# define LOCATIONBLOCK_HPP
 
 #include "configParser.hpp"
 #include "Server.hpp"
@@ -23,6 +23,7 @@ class ConfigParser;
 class LocationBlock {
 public:
 	LocationBlock();
+	LocationBlock(LocationBlock const &src);
 	~LocationBlock();
 
 	LocationBlock &operator=(LocationBlock const &C);
@@ -51,6 +52,20 @@ public:
 	void setCgi(std::string cgi);
 	void setRet(std::string ret);
 	void parseLocationBlock(std::istringstream &cleanedStream, ServerBlock &serverBlock);
+
+	class LocationException : public std::exception {
+            public :
+                LocationException(std::string errMessage) throw() {
+					_errMessage = "Location Error: " + errMessage;
+				}
+				virtual const char* what() const throw() {
+					return (_errMessage.c_str());
+				}
+				~LocationException() throw() {}
+            
+            private:
+                std::string _errMessage;
+        };
 
 private:
 	// std::ifstream _file;

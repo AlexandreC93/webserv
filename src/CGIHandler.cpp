@@ -59,7 +59,11 @@ Response CGIHandler::handleCGIRequest(const Request &request)
 		response.status_code = 200;
 		response.body = responseStream.str();
 		response.headers["Content-Type"] = "text/html";
-		response.headers["Content-Length"] = std::to_string(response.body.length());
+		
+		std::ostringstream oss;
+		oss << response.body.length();
+		response.headers["Content-Length"] = oss.str();
+		
 		return response;
 	}
 }

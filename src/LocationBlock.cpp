@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elie <elie@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: lenibart <lenibart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/23 18:40:52 by elie              #+#    #+#             */
-/*   Updated: 2024/06/27 10:38:24 by elie             ###   ########.fr       */
+/*   Updated: 2024/06/27 19:36:06 by lenibart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/Location.hpp"
+#include "../include/LocationBlock.hpp"
 
 LocationBlock::LocationBlock() {
 	_location_path = "";

@@ -4,10 +4,10 @@
 #include <string>
 #include <map>
 #include <list>
+#include <vector>
 #include <netinet/in.h>
-#include "LocationConfig.hpp"
 #include "configParser.hpp"
-#include "Location.hpp"
+#include "LocationBlock.hpp"
 
 class LocationBlock;
 
