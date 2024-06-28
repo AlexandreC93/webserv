@@ -83,7 +83,7 @@ std::string ConfigParser::cleanFile(std::string &content) const {
 
 
 std::vector<ServerBlock> ConfigParser::parseConfig() {
-    std::ifstream configFile(_path);
+    std::ifstream configFile(_path.c_str());
     if (!configFile)
         throw std::runtime_error("Cannot open configuration file.");
 

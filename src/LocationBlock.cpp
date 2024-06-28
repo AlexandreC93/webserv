@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Location.cpp                                       :+:      :+:    :+:   */
+/*   LocationBlock.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lenibart <lenibart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/23 18:40:52 by elie              #+#    #+#             */
-/*   Updated: 2024/06/27 19:36:06 by lenibart         ###   ########.fr       */
+/*   Updated: 2024/06/28 14:16:20 by lenibart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,20 @@ LocationBlock::LocationBlock() {
 	_cgi = "";
 	_ret = "";
 }
+
+LocationBlock::LocationBlock(LocationBlock const &src) {
+        _location_path = src._location_path;
+        _root = src._root;
+        _index = src._index;
+        _allow_methods = src._allow_methods;
+        _autoindex = src._autoindex;
+        _upload_store = src._upload_store;
+        _cgi_path = src._cgi_path;
+        _cgi_ext = src._cgi_ext;
+        _cgi = src._cgi;
+        _ret = src._ret;
+}
+
 LocationBlock::~LocationBlock() {}
 
 LocationBlock &LocationBlock::operator=(LocationBlock const &C)

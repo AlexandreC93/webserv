@@ -282,13 +282,10 @@ void ServerBlock::handleConnections()
                         std::string cgiPath, cgiScript;
 
                         // Determine if the request should be handled by CGI
-                        for (const auto &location : _locations)
-                        {
-                            if (request.uri.find(location.getLocationPath()) == 0)
-                            {
-                                if (!location.getCgiPath().empty())
-                                {
-                                    isCGIRequest = true;
+                        for (std::vector<LocationBlock>::const_iterator it = _locations.begin(); it != _locations.end(); ++it) {
+                            const LocationBlock& location = *it;
+                            if (request.uri.find(location.getLocationPath()) == 0) {
+                                if (!location.getCgiPath().empty()) {
                                     cgiPath = location.getCgiPath();
                                     cgiScript = request.uri.substr(location.getLocationPath().length());
                                     break;
