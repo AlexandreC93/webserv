@@ -15,10 +15,19 @@
 // }
 
 int main(int argc, char **argv) {
-    (void)argc;
-    (void)argv;
 
-    ConfigParser parser("./config/main.conf");
+
+    if (argc > 2){
+        std::cerr << "Error: Too many arguments" << std::endl;
+        return (1);
+    }
+    std::string path;
+    if (argc == 1)
+        path = "./config/default.conf";
+    else
+        path = argv[1];
+
+    ConfigParser parser(path);
     std::vector<ServerBlock> serverBlocks = parser.parseConfig();
     parser.mainParse();  // Ensure this is called to parse the config
 
